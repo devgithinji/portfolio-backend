@@ -7,6 +7,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("/posts")
 public class PostController {
@@ -15,7 +17,7 @@ public class PostController {
     private PostService postService;
 
     @PostMapping
-    public Post createPost(@RequestBody PostDTO blogDTO) throws JsonProcessingException {
+    public Post createPost(@Valid @RequestBody PostDTO blogDTO) throws JsonProcessingException {
         return postService.createPost(blogDTO);
     }
 

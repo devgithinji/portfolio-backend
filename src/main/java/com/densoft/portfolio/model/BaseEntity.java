@@ -12,6 +12,8 @@ import java.time.LocalDateTime;
 @MappedSuperclass
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public abstract class BaseEntity {
 
     @Id
