@@ -1,4 +1,4 @@
-package com.densoft.portfolio.validators;
+package com.densoft.portfolio.validators.tagContraint;
 
 import com.densoft.portfolio.service.tags.TagsService;
 import org.springframework.beans.factory.annotation.Autowired;

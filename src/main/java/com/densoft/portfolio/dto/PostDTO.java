@@ -1,6 +1,6 @@
 package com.densoft.portfolio.dto;
 
-import com.densoft.portfolio.validators.TagConstraint;
+import com.densoft.portfolio.validators.tagContraint.TagConstraint;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

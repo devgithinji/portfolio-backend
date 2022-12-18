@@ -32,11 +32,9 @@ public class UserController {
     }
 
     @PostMapping
-    public Project createProject(@RequestParam("image") MultipartFile file) throws IOException {
-        if (!file.isEmpty()) {
-            String fileName = generateRandomUUID() + StringUtils.cleanPath(file.getOriginalFilename()).replaceAll("\\s", "");
-            String uploadDir = "projects";
-            awss3Util.uploadFile(uploadDir, fileName, file, ObjectCannedACL.PRIVATE);
+    public Project createProfile(@RequestParam("image") MultipartFile file) throws IOException {
+        if (!file.isEmpty()) {;
+            awss3Util.uploadFile( "profile", file, ObjectCannedACL.PRIVATE);
         }
         return null;
     }

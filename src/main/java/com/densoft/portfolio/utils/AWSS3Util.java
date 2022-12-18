@@ -3,17 +3,18 @@ package com.densoft.portfolio.utils;
 import com.densoft.portfolio.exceptions.ApIException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import software.amazon.awssdk.core.ResponseBytes;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.*;
 
-import javax.activation.MimetypesFileTypeMap;
 import java.io.IOException;
 import java.io.InputStream;
+
+import static com.densoft.portfolio.utils.Util.generateRandomUUID;
 
 
 @Component
@@ -26,8 +27,9 @@ public class AWSS3Util {
     public String BUCKET_NAME;
 
 
-    public void uploadFile(String folderName, String fileName, MultipartFile multipartFile, ObjectCannedACL objectCannedACL) throws IOException {
+    public void uploadFile(String folderName, MultipartFile multipartFile, ObjectCannedACL objectCannedACL) throws IOException {
         InputStream inputStream = multipartFile.getInputStream();
+        String fileName = generateRandomUUID() + StringUtils.cleanPath(multipartFile.getOriginalFilename()).replaceAll("\\s", "");
         PutObjectRequest request = PutObjectRequest.builder().bucket(BUCKET_NAME)
                 .key(folderName + "/" + fileName).acl(objectCannedACL).contentType(multipartFile.getContentType()).build();
 
