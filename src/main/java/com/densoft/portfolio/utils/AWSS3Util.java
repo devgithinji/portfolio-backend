@@ -35,7 +35,7 @@ public class AWSS3Util {
             int contentLength = inputStream.available();
             s3Client.putObject(request, RequestBody.fromInputStream(inputStream, contentLength));
         } catch (IOException e) {
-            throw new ApIException("could not upload image");
+            throw new ApIException("could not upload file");
         }
     }
 
@@ -45,13 +45,17 @@ public class AWSS3Util {
             ResponseBytes<GetObjectResponse> objectBytes = s3Client.getObjectAsBytes(getObjectRequest);
             return objectBytes.asByteArray();
         } catch (Exception e) {
-            throw new ApIException("Could not download image");
+            throw new ApIException("Could not download file");
         }
     }
 
     public void deleteFile(String fileName) {
-        DeleteObjectRequest request = DeleteObjectRequest.builder().bucket(BUCKET_NAME).key(fileName).build();
-        s3Client.deleteObject(request);
+        try {
+            DeleteObjectRequest request = DeleteObjectRequest.builder().bucket(BUCKET_NAME).key(fileName).build();
+            s3Client.deleteObject(request);
+        } catch (Exception e) {
+            throw new ApIException("Could not delete file");
+        }
     }
 
 
