@@ -1,7 +1,5 @@
 package com.densoft.portfolio.exceptions;
 
-import org.springframework.http.HttpStatus;
-
 public class ApIException extends RuntimeException {
     private String message;
 

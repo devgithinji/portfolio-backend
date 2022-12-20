@@ -7,4 +7,6 @@ import java.util.Optional;
 
 public interface PostRepository extends JpaRepository<Post, Integer> {
     Optional<Post> findPostByTitle(String title);
+
+    Optional<Post> findPostBySlug(String slug);
 }

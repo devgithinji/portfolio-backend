@@ -4,9 +4,18 @@ import com.densoft.portfolio.dto.PostDTO;
 import com.densoft.portfolio.model.Post;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
+import java.util.List;
+
 public interface PostService {
 
-    Post createPost(PostDTO postDTO) throws JsonProcessingException;
+    List<Post> getPosts();
 
-    Post publishOnMedium(Integer id) throws JsonProcessingException;
+
+    Post getPost(String slug);
+
+    void deletePost(int postId);
+
+    Post createPost(PostDTO postDTO);
+
+    Post publishOnMedium(Integer id) ;
 }

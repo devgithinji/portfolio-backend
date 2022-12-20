@@ -19,7 +19,7 @@ public class RestService {
 
     @PostConstruct
     private void postConstruct() {
-        getUserId();
+//        getUserId();
     }
 
     public UserResponse getUserId() {

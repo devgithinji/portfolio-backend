@@ -1,9 +1,7 @@
 package com.densoft.portfolio.dto;
 
-import com.densoft.portfolio.validators.fileType.ValidFile;
 import com.densoft.portfolio.validators.tagContraint.TagConstraint;
 import lombok.Data;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
@@ -19,11 +17,11 @@ public class ProjectDTO {
     private String description;
     @NotBlank(message = "project link is required")
     private String siteLink;
-    @NotBlank(message = "project repo is required")
+    @NotBlank(message = "project repo link is required")
     private String repoLink;
     @TagConstraint
     private String[] tags;
 
-    @ValidFile(message = "image must be (png/jpeg/jpg) less than 3MB", maxSize = 3)
-    private MultipartFile image;
+//    @ValidFile(message = "image must be (png/jpeg/jpg) less than 3MB", maxSize = 3)
+//    private MultipartFile image;
 }

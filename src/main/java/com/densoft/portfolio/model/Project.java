@@ -1,7 +1,10 @@
 package com.densoft.portfolio.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -9,7 +12,8 @@ import java.util.Set;
 
 @Entity
 @Table(name = "projects")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 public class Project extends BaseEntity {
     @Column(nullable = false, length = 50)
@@ -24,19 +28,24 @@ public class Project extends BaseEntity {
     private String image;
     @Column(nullable = false, columnDefinition = "boolean default false")
     private boolean published;
-    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinTable(name = "project_tags",
             joinColumns = @JoinColumn(name = "project_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "tag_id", referencedColumnName = "id"))
     private Set<Tag> tags = new HashSet<>();
 
-    public Project(String name, String description, String siteLink, String repoLink, String image, boolean published, Set<Tag> tags) {
+
+    public Project(String name, String description, String siteLink, String repoLink, String image, boolean published) {
         this.name = name;
         this.description = description;
         this.siteLink = siteLink;
         this.repoLink = repoLink;
         this.image = image;
         this.published = published;
-        this.tags = tags;
+    }
+
+    public void addTag(Tag tag){
+        this.tags.add(tag);
+        tag.getProjects().add(this);
     }
 }

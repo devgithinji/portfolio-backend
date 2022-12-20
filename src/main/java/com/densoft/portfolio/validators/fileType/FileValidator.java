@@ -20,7 +20,9 @@ public class FileValidator implements ConstraintValidator<ValidFile, MultipartFi
     @Override
     public boolean isValid(MultipartFile multipartFile, ConstraintValidatorContext constraintValidatorContext) {
 
-        if(multipartFile.getSize() > maxSize) return false;
+        if (multipartFile.isEmpty()) return false;
+
+        if (multipartFile.getSize() > maxSize) return false;
 
         if (fileType.equals(FileType.IMAGE)) {
             return isImage(multipartFile.getContentType());

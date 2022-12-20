@@ -27,15 +27,17 @@ public class AWSS3Util {
     public String BUCKET_NAME;
 
 
-    public void uploadFile(String folderName, MultipartFile multipartFile, ObjectCannedACL objectCannedACL) throws IOException {
+    public String uploadFile(String folderName, MultipartFile multipartFile, ObjectCannedACL objectCannedACL) throws IOException {
         InputStream inputStream = multipartFile.getInputStream();
         String fileName = generateRandomUUID() + StringUtils.cleanPath(multipartFile.getOriginalFilename()).replaceAll("\\s", "");
+        String key = folderName + "/" + fileName;
         PutObjectRequest request = PutObjectRequest.builder().bucket(BUCKET_NAME)
-                .key(folderName + "/" + fileName).acl(objectCannedACL).contentType(multipartFile.getContentType()).build();
+                .key(key).acl(objectCannedACL).contentType(multipartFile.getContentType()).build();
 
         try {
             int contentLength = inputStream.available();
             s3Client.putObject(request, RequestBody.fromInputStream(inputStream, contentLength));
+            return key;
         } catch (IOException e) {
             throw new ApIException("could not upload file");
         }

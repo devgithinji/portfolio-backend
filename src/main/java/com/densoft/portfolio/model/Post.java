@@ -1,21 +1,13 @@
 package com.densoft.portfolio.model;
 
-import com.densoft.portfolio.dto.PostDTO;
-import com.densoft.portfolio.utils.Util;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.*;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
-
-import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
-
-import static com.fasterxml.jackson.annotation.JsonProperty.Access.*;
 
 @Entity
 @Table(name = "posts")
@@ -34,6 +26,9 @@ public class Post extends BaseEntity {
     @Column(name = "blog_url", length = 100)
     private String blogUrl;
 
+    @Column(columnDefinition = "boolean default false")
+    private Boolean published;
+
     @ManyToMany(fetch = FetchType.EAGER, cascade = {
             CascadeType.PERSIST,
             CascadeType.DETACH,
@@ -43,15 +38,18 @@ public class Post extends BaseEntity {
             name = "post_tags",
             joinColumns = @JoinColumn(name = "post_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "tag_id", referencedColumnName = "id"))
+    @JsonIgnoreProperties({"posts", "projects"})
     private Set<Tag> tags = new HashSet<>();
-    @Column(nullable = false, columnDefinition = "boolean default false")
-    private Boolean published;
 
-    public Post(String title, String slug, String content, Boolean published) {
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "post_id")
+    private Set<Image> images = new HashSet<>();
+
+
+    public Post(String title, String slug, String content) {
         this.title = title;
         this.slug = slug;
         this.content = content;
-        this.published = published;
     }
 
     public void addTag(Tag newTag) {
