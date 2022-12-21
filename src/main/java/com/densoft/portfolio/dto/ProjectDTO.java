@@ -1,7 +1,10 @@
 package com.densoft.portfolio.dto;
 
+import com.densoft.portfolio.validators.fileType.FileType;
+import com.densoft.portfolio.validators.fileType.ValidFile;
 import com.densoft.portfolio.validators.tagContraint.TagConstraint;
 import lombok.Data;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
@@ -22,6 +25,7 @@ public class ProjectDTO {
     @TagConstraint
     private String[] tags;
 
-//    @ValidFile(message = "image must be (png/jpeg/jpg) less than 3MB", maxSize = 3)
-//    private MultipartFile image;
+    @ValidFile(fileType = FileType.IMAGE, message = "image required type: (png/jpeg/jpg) max size: 1MB", maxSize = 1)
+    MultipartFile image;
+
 }

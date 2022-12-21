@@ -1,7 +1,6 @@
 package com.densoft.portfolio.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import lombok.Data;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -32,6 +31,7 @@ public class Project extends BaseEntity {
     @JoinTable(name = "project_tags",
             joinColumns = @JoinColumn(name = "project_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "tag_id", referencedColumnName = "id"))
+    @JsonIgnoreProperties({"projects", "posts"})
     private Set<Tag> tags = new HashSet<>();
 
 

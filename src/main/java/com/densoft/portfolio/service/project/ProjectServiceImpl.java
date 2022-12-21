@@ -9,7 +9,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
+import java.util.List;
 
 @Service
 public class ProjectServiceImpl implements ProjectService {
@@ -32,9 +32,12 @@ public class ProjectServiceImpl implements ProjectService {
 
         for (String tag : projectDTO.getTags()) {
             project.addTag(util.generateTag(tag));
-            System.out.println(util.generateTag(tag).getName());
         }
-        System.out.println("done");
         return projectRepository.save(project);
+    }
+
+    @Override
+    public List<Project> getProjectsByTag(int tagId) {
+        return projectRepository.findProjectByTags_Id(tagId);
     }
 }
