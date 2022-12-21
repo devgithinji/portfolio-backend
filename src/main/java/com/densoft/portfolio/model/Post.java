@@ -29,17 +29,14 @@ public class Post extends BaseEntity {
     @Column(columnDefinition = "boolean default false")
     private Boolean published;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = {
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {
             CascadeType.PERSIST,
             CascadeType.DETACH,
             CascadeType.MERGE,
             CascadeType.REFRESH})
-    @JoinTable(
-            name = "post_tags",
-            joinColumns = @JoinColumn(name = "post_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "tag_id", referencedColumnName = "id"))
+    @JoinColumn(name = "tag_id")
     @JsonIgnoreProperties({"posts", "projects"})
-    private Set<Tag> tags = new HashSet<>();
+    private Tag tag;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "post_id")
@@ -50,11 +47,6 @@ public class Post extends BaseEntity {
         this.title = title;
         this.slug = slug;
         this.content = content;
-    }
-
-    public void addTag(Tag newTag) {
-        this.tags.add(newTag);
-        newTag.getPosts().add(this);
     }
 
 }

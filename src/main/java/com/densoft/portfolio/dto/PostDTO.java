@@ -1,6 +1,6 @@
 package com.densoft.portfolio.dto;
 
-import com.densoft.portfolio.validators.tagContraint.TagConstraint;
+import com.densoft.portfolio.validators.tagContraint.SingleTagValidator;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,8 +20,8 @@ public class PostDTO {
     @Size(min = 50, max = 3000, message = "Post description should be at least 50 characters")
     private String content;
 
-    @TagConstraint
-    private String[] tags;
+    @SingleTagValidator
+    private String tag;
 
 }
 

@@ -19,11 +19,11 @@ public class Tag extends BaseEntity {
     @Column(nullable = false, unique = true, length = 30)
     private String name;
 
-    @ManyToMany(mappedBy = "tags", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "tag", fetch = FetchType.LAZY)
     @JsonIgnoreProperties("tags")
     private Set<Post> posts = new HashSet<>();
 
-    @ManyToMany(mappedBy = "tags",fetch = FetchType.LAZY)
+    @ManyToMany(mappedBy = "tags", fetch = FetchType.LAZY)
     @JsonIgnoreProperties("tags")
     private Set<Project> projects = new HashSet<>();
 

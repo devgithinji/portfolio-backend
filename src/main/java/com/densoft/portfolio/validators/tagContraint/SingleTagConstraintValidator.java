@@ -8,7 +8,7 @@ import javax.validation.ConstraintValidatorContext;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class TagConstraintValidator implements ConstraintValidator<TagConstraint, String[]> {
+public class SingleTagConstraintValidator implements ConstraintValidator<SingleTagValidator, String> {
 
     @Autowired
     private TagsService tagsService;
@@ -16,17 +16,14 @@ public class TagConstraintValidator implements ConstraintValidator<TagConstraint
     private List<String> tagList;
 
     @Override
-    public void initialize(TagConstraint constraintAnnotation) {
+    public void initialize(SingleTagValidator constraintAnnotation) {
         tagList = tagsService.getTags().stream().map(tag -> tag.getName().toLowerCase()).collect(Collectors.toList());
     }
 
     @Override
-    public boolean isValid(String[] strings, ConstraintValidatorContext constraintValidatorContext) {
+    public boolean isValid(String string, ConstraintValidatorContext constraintValidatorContext) {
 
-        if(strings == null || strings.length == 0) return false;
-        for (String tag : strings) {
-            if (!tagList.contains(tag.toLowerCase())) return false;
-        }
-        return true;
+        if (string == null || string.isBlank()) return false;
+        return tagList.contains(string.toLowerCase());
     }
 }

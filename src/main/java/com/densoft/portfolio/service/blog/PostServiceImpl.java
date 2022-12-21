@@ -8,7 +8,6 @@ import com.densoft.portfolio.repository.PostRepository;
 import com.densoft.portfolio.repository.TagRepository;
 import com.densoft.portfolio.restClient.RestService;
 import com.densoft.portfolio.utils.Util;
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -25,53 +24,82 @@ public class PostServiceImpl implements PostService {
 
     private final Util util;
 
-    private final ModelMapper modelMapper;
 
-    public PostServiceImpl(PostRepository postRepository, TagRepository tagRepository, RestService restService, Util util, ModelMapper modelMapper) {
+    public PostServiceImpl(PostRepository postRepository, TagRepository tagRepository, RestService restService, Util util) {
         this.postRepository = postRepository;
         this.tagRepository = tagRepository;
         this.restService = restService;
         this.util = util;
-        this.modelMapper = modelMapper;
     }
 
     @Override
     public List<Post> getPosts() {
         return postRepository.findAll();
     }
+
+    @Override
+    public Post getPostById(Integer postId) {
+        return getExistingPostById(postId);
+    }
+
+    @Override
+    public Post getPostBySlug(String slug) {
+        return postRepository.findPostBySlug(slug).orElseThrow(() -> new ResourceNotFoundException("post", "slug", slug));
+    }
+
+
     @Override
     public Post createPost(PostDTO postDTO) {
         Optional<Post> post = postRepository.findPostByTitle(postDTO.getTitle());
         if (post.isPresent()) throw new ApIException("Post title is already used");
 
-        Post newpost = new Post(postDTO.getTitle(),Util.generateSlug(postDTO.getTitle()), postDTO.getContent());
-
-
-//        for (String tag : postDTO.getTags()) {
-//            newpost.addTag(util.generateTags(tag));
-//        }
+        Post newpost = new Post(postDTO.getTitle(), Util.generateSlug(postDTO.getTitle()), postDTO.getContent());
+        newpost.setPublished(true);
+        //save tag
+        newpost.setTag(util.generateTags(new String[]{postDTO.getTag()}).stream().toList().get(0));
         return postRepository.save(newpost);
     }
 
     @Override
-    public Post getPost(String slug) {
-        return postRepository.findPostBySlug(slug).orElseThrow(() -> new ResourceNotFoundException("post", "slug", slug));
+    public Post togglePublishStatus(Integer postId) {
+        Post post = getExistingPostById(postId);
+        post.setPublished(!post.getPublished());
+        return postRepository.save(post);
     }
 
     @Override
+    public Post updatePost(PostDTO postDTO, Integer postId) {
+        Post post = getExistingPostById(postId);
+        //check if title is taken
+        Optional<Post> postWithTitle = postRepository.findPostWithMatchingTitle(postDTO.getTitle(), postId);
+        if (postWithTitle.isPresent()) throw new ApIException("Post title is already taken");
+        post.setTitle(postDTO.getTitle());
+        post.setSlug(Util.generateSlug(postDTO.getTitle()));
+        post.setContent(post.getContent());
+        //save tag
+        post.setTag(util.generateTags(new String[]{postDTO.getTag()}).stream().toList().get(0));
+        return postRepository.save(post);
+    }
+
+
+    @Override
     public void deletePost(int postId) {
-        Post post = postRepository.findById(postId).orElseThrow(() -> new ResourceNotFoundException("post", "id", String.valueOf(postId)));
+        Post post = getExistingPostById(postId);
+        //delete all images
+
         postRepository.deleteById(post.getId());
     }
 
 
-
-
     @Override
-    public Post publishOnMedium(Integer id) {
-        Post post = postRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("post", "id", id.toString()));
+    public Post publishOnMedium(Integer postId) {
+        Post post = getExistingPostById(postId);
 //        PostResponse postResponse = restService.createPost(new PostDTO(post.getTitle(), "html", post.getContent(), post.getTagsList()));
 //        post.setMediumUrl(postResponse.getData().getUrl());
         return postRepository.save(post);
+    }
+
+    private Post getExistingPostById(Integer postId) {
+        return postRepository.findById(postId).orElseThrow(() -> new ResourceNotFoundException("post", "Id", String.valueOf(postId)));
     }
 }
