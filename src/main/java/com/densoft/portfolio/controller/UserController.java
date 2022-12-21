@@ -1,26 +1,32 @@
 package com.densoft.portfolio.controller;
 
-import com.densoft.portfolio.model.Project;
+import com.densoft.portfolio.dto.UserCreateDTO;
+import com.densoft.portfolio.model.User;
 import com.densoft.portfolio.restClient.RestService;
+import com.densoft.portfolio.service.user.UserService;
 import com.densoft.portfolio.utils.AWSS3Util;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-import software.amazon.awssdk.services.s3.model.ObjectCannedACL;
 
+import javax.validation.Valid;
 import java.io.IOException;
 
 @RestController
 @RequestMapping("/user")
 public class UserController {
 
-    @Autowired
-    private AWSS3Util awss3Util;
+    private final AWSS3Util awss3Util;
 
-    @Autowired
-    private RestService restService;
+    private final RestService restService;
+
+    private final UserService userService;
+
+    public UserController(AWSS3Util awss3Util, RestService restService, UserService userService) {
+        this.awss3Util = awss3Util;
+        this.restService = restService;
+        this.userService = userService;
+    }
 
     @GetMapping
     public String getUser() {
@@ -29,11 +35,9 @@ public class UserController {
     }
 
     @PostMapping
-    public Project createProfile(@RequestParam("image") MultipartFile file) throws IOException {
-        if (!file.isEmpty()) {;
-            awss3Util.uploadFile( "profile", file, ObjectCannedACL.PRIVATE);
-        }
-        return null;
+    public User createProfile(@Valid UserCreateDTO userCreateDTO) throws IOException {
+
+        return userService.createProfile(userCreateDTO);
     }
 
     @GetMapping(value = "/download-resume")
