@@ -7,6 +7,7 @@ import com.densoft.portfolio.model.Post;
 import com.densoft.portfolio.repository.PostRepository;
 import com.densoft.portfolio.repository.TagRepository;
 import com.densoft.portfolio.restClient.RestService;
+import com.densoft.portfolio.utils.AWSS3Util;
 import com.densoft.portfolio.utils.Util;
 import org.springframework.stereotype.Service;
 
@@ -24,12 +25,15 @@ public class PostServiceImpl implements PostService {
 
     private final Util util;
 
+    private final AWSS3Util awss3Util;
 
-    public PostServiceImpl(PostRepository postRepository, TagRepository tagRepository, RestService restService, Util util) {
+
+    public PostServiceImpl(PostRepository postRepository, TagRepository tagRepository, RestService restService, Util util, AWSS3Util awss3Util) {
         this.postRepository = postRepository;
         this.tagRepository = tagRepository;
         this.restService = restService;
         this.util = util;
+        this.awss3Util = awss3Util;
     }
 
     @Override
@@ -86,6 +90,9 @@ public class PostServiceImpl implements PostService {
     public void deletePost(int postId) {
         Post post = getExistingPostById(postId);
         //delete all images
+        post.getImages().stream().forEach(image -> {
+            awss3Util.deleteFile(image.getPath());
+        });
 
         postRepository.deleteById(post.getId());
     }

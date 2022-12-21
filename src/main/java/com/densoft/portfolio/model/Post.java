@@ -38,8 +38,8 @@ public class Post extends BaseEntity {
     @JsonIgnoreProperties({"posts", "projects"})
     private Tag tag;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name = "post_id")
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JsonIgnoreProperties({"post"})
     private Set<Image> images = new HashSet<>();
 
 
