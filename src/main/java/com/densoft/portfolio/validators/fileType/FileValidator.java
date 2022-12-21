@@ -11,16 +11,21 @@ public class FileValidator implements ConstraintValidator<ValidFile, MultipartFi
 
     Long maxSize;
 
+    boolean isRequired;
+
     @Override
     public void initialize(ValidFile constraintAnnotation) {
         fileType = constraintAnnotation.fileType();
         maxSize = (long) constraintAnnotation.maxSize() * 1024 * 1024;
+        isRequired = constraintAnnotation.isRequired();
     }
 
     @Override
     public boolean isValid(MultipartFile multipartFile, ConstraintValidatorContext constraintValidatorContext) {
 
-        if (multipartFile.isEmpty()) return false;
+        if ((multipartFile == null || multipartFile.isEmpty()) && !isRequired) return true;
+
+        if (multipartFile == null || multipartFile.isEmpty()) return false;
 
         if (multipartFile.getSize() > maxSize) return false;
 

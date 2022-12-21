@@ -8,9 +8,7 @@ import com.densoft.portfolio.repository.PostRepository;
 import com.densoft.portfolio.repository.TagRepository;
 import com.densoft.portfolio.restClient.RestService;
 import com.densoft.portfolio.utils.Util;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,20 +17,23 @@ import java.util.Optional;
 @Service
 public class PostServiceImpl implements PostService {
 
-    @Autowired
-    private PostRepository postRepository;
+    private final PostRepository postRepository;
 
-    @Autowired
-    private TagRepository tagRepository;
+    private final TagRepository tagRepository;
 
-    @Autowired
-    private RestService restService;
+    private final RestService restService;
 
-    @Autowired
-    private Util util;
+    private final Util util;
 
-    @Autowired
-    private ModelMapper modelMapper;
+    private final ModelMapper modelMapper;
+
+    public PostServiceImpl(PostRepository postRepository, TagRepository tagRepository, RestService restService, Util util, ModelMapper modelMapper) {
+        this.postRepository = postRepository;
+        this.tagRepository = tagRepository;
+        this.restService = restService;
+        this.util = util;
+        this.modelMapper = modelMapper;
+    }
 
     @Override
     public List<Post> getPosts() {
@@ -45,9 +46,10 @@ public class PostServiceImpl implements PostService {
 
         Post newpost = new Post(postDTO.getTitle(),Util.generateSlug(postDTO.getTitle()), postDTO.getContent());
 
-        for (String tag : postDTO.getTags()) {
-            newpost.addTag(util.generateTag(tag));
-        }
+
+//        for (String tag : postDTO.getTags()) {
+//            newpost.addTag(util.generateTags(tag));
+//        }
         return postRepository.save(newpost);
     }
 

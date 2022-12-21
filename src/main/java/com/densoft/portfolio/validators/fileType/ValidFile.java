@@ -19,6 +19,9 @@ public @interface ValidFile {
 
     int maxSize() default 5;
 
+
+    boolean isRequired() default false;
+
     Class<?>[] groups() default {};
 
     Class<? extends Payload>[] payload() default {};

@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface ProjectRepository extends JpaRepository<Project, Integer> {
 
-    List<Project> findProjectByTags_Id(int tagId);
+    List<Project> findProjectByTags_Name(String tag);
 }

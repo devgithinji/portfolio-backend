@@ -44,8 +44,13 @@ public class Project extends BaseEntity {
         this.published = published;
     }
 
-    public void addTag(Tag tag){
-        this.tags.add(tag);
-        tag.getProjects().add(this);
+    public void addTags(Set<Tag> tags) {
+        this.tags.addAll(tags);
+        tags.forEach(tag -> tag.getProjects().add(this));
+    }
+
+    public void clearTags() {
+        this.tags.forEach(tag -> tag.getProjects().remove(this));
+        tags.clear();
     }
 }
