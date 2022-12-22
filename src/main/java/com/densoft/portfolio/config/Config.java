@@ -1,5 +1,6 @@
 package com.densoft.portfolio.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -21,11 +22,23 @@ public class Config {
     @Bean
     public S3Client s3Client() {
 
-        return S3Client.builder().credentialsProvider(StaticCredentialsProvider.create(AwsBasicCredentials.create(awsAccessKeyId, awsSecretKeyId))).region(Region.US_EAST_1).build();
+        return S3Client.
+                builder().
+                credentialsProvider(
+                        StaticCredentialsProvider.
+                                create(AwsBasicCredentials.
+                                        create(awsAccessKeyId, awsSecretKeyId))
+                ).
+                region(Region.US_EAST_1).build();
     }
 
     @Bean
     public ModelMapper modelMapper() {
         return new ModelMapper();
+    }
+
+    @Bean
+    public ObjectMapper objectMapper() {
+        return new ObjectMapper();
     }
 }
