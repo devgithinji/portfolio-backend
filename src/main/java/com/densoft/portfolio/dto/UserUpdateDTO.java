@@ -10,7 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserUpdateDTO {
+public class UserUpdateDTO extends UserBaseDTO {
 
 
     @ValidFile(fileType = FileType.DOC, message = "file type: pdf and Max Size: 3MB", maxSize = 3)

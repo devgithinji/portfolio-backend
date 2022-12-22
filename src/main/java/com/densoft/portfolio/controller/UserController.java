@@ -1,6 +1,7 @@
 package com.densoft.portfolio.controller;
 
 import com.densoft.portfolio.dto.UserCreateDTO;
+import com.densoft.portfolio.dto.UserUpdateDTO;
 import com.densoft.portfolio.model.User;
 import com.densoft.portfolio.restClient.RestService;
 import com.densoft.portfolio.service.user.UserService;
@@ -29,15 +30,18 @@ public class UserController {
     }
 
     @GetMapping
-    public String getUser() {
-        restService.getUserId();
-        return "dennis";
+    public User getProfile() {
+        return userService.getProfile();
     }
 
     @PostMapping
     public User createProfile(@Valid UserCreateDTO userCreateDTO) throws IOException {
-
         return userService.createProfile(userCreateDTO);
+    }
+
+    @PutMapping
+    public User updateUser(@Valid UserUpdateDTO userUpdateDTO) throws IOException {
+        return userService.updateUser(userUpdateDTO);
     }
 
     @GetMapping(value = "/download-resume")

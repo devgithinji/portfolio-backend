@@ -1,6 +1,8 @@
 package com.densoft.portfolio.service.user;
 
 import com.densoft.portfolio.dto.UserCreateDTO;
+import com.densoft.portfolio.dto.UserUpdateDTO;
+import com.densoft.portfolio.exceptions.ResourceNotFoundException;
 import com.densoft.portfolio.model.User;
 import com.densoft.portfolio.repository.UserRepository;
 import com.densoft.portfolio.utils.AWSS3Util;
@@ -42,6 +44,27 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getProfile() {
-        return null;
+        Integer userId = 1;
+        return userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("user", "Id", String.valueOf(userId)));
+    }
+
+    @Override
+    public User updateUser(UserUpdateDTO userUpdateDTO) throws IOException {
+        //get auth user
+        User user = new User();
+        if (userUpdateDTO.getResume() != null && !userUpdateDTO.getResume().isEmpty()) {
+            awss3Util.deleteFile(user.getResumePath());
+            String filePath = awss3Util.uploadFile("profile", userUpdateDTO.getResume(), ObjectCannedACL.PRIVATE);
+            user.setResumePath(filePath);
+        }
+        user.setFirstName(userUpdateDTO.getFirstName());
+        user.setLastName(userUpdateDTO.getLastName());
+        user.setEmail(userUpdateDTO.getEmail());
+        user.setPhone(userUpdateDTO.getPhone());
+        user.setSocialMediaLinks(objectMapper.writeValueAsString(userUpdateDTO.getSocialMediaLinks()));
+        user.setPersonalStatement(user.getPersonalStatement());
+        user.setSkills(objectMapper.writeValueAsString(userUpdateDTO.getSkills()));
+
+        return userRepository.save(user);
     }
 }

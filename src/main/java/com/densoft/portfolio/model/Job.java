@@ -27,4 +27,12 @@ public class Job extends BaseEntity {
 
     @Column(length = 1000, nullable = false, name = "duration_range")
     private String durationRange;
+
+    public Job(String institution, String title, String description, String achievements, String durationRange) {
+        this.institution = institution;
+        this.title = title;
+        this.description = description;
+        this.achievements = achievements;
+        this.durationRange = durationRange;
+    }
 }
