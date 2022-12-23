@@ -1,6 +1,7 @@
 package com.densoft.portfolio.service.blog;
 
 import com.densoft.portfolio.dto.PostDTO;
+import com.densoft.portfolio.dto.PostResponse;
 import com.densoft.portfolio.exceptions.ApIException;
 import com.densoft.portfolio.exceptions.ResourceNotFoundException;
 import com.densoft.portfolio.model.Post;
@@ -9,6 +10,10 @@ import com.densoft.portfolio.repository.TagRepository;
 import com.densoft.portfolio.restClient.RestService;
 import com.densoft.portfolio.utils.AWSS3Util;
 import com.densoft.portfolio.utils.Util;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -37,8 +42,22 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<Post> getPosts() {
-        return postRepository.findAll();
+    public PostResponse getPosts(Integer pageNo, Integer pageSize, String sortBy, String sortDir) {
+        //create a pageable instance
+        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+        Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
+        Page<Post> postPage = postRepository.findAll(pageable);
+        // get content from page object
+        List<Post> posts = postPage.getContent();
+
+        return new PostResponse(
+                posts,
+                postPage.getNumber(),
+                postPage.getSize(),
+                postPage.getTotalElements(),
+                postPage.getTotalPages(),
+                postPage.isLast()
+        );
     }
 
     @Override

@@ -1,13 +1,12 @@
 package com.densoft.portfolio.service.blog;
 
 import com.densoft.portfolio.dto.PostDTO;
+import com.densoft.portfolio.dto.PostResponse;
 import com.densoft.portfolio.model.Post;
-
-import java.util.List;
 
 public interface PostService {
 
-    List<Post> getPosts();
+    PostResponse getPosts(Integer pageNo, Integer PageSize, String sortBy, String sortDir);
 
     Post getPostById(Integer postId);
 

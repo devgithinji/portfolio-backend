@@ -1,12 +1,13 @@
 package com.densoft.portfolio.controller;
 
 import com.densoft.portfolio.dto.PostDTO;
+import com.densoft.portfolio.dto.PostResponse;
 import com.densoft.portfolio.model.Post;
 import com.densoft.portfolio.service.blog.PostService;
+import com.densoft.portfolio.utils.AppConstants;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @RestController
 @RequestMapping("/posts")
@@ -19,8 +20,11 @@ public class PostController {
     }
 
     @GetMapping
-    public List<Post> getPosts() {
-        return postService.getPosts();
+    public PostResponse getPosts(@RequestParam(value = "PageNo", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) Integer pageNo,
+                                 @RequestParam(value = "pageSize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) Integer pageSize,
+                                 @RequestParam(value = "sortBy", defaultValue = AppConstants.DEFAULT_SORT_BY, required = false) String sortBy,
+                                 @RequestParam(value = "sortDir", defaultValue = AppConstants.DEFAULT_SORT_DIR, required = false) String sortDir) {
+        return postService.getPosts(pageNo, pageSize, sortBy, sortDir);
     }
 
     @GetMapping("admin/{postId}")
