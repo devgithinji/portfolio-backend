@@ -30,12 +30,12 @@ public class JobHistoryController {
     }
 
     @PostMapping
-    public Job createJob(@Valid JobDTO jobDTO) throws JsonProcessingException {
+    public Job createJob(@Valid @RequestBody JobDTO jobDTO) throws JsonProcessingException {
         return jobHistoryService.createJob(jobDTO);
     }
 
     @PutMapping("{jobId}")
-    public Job updateJob(@PathVariable("jobId") Integer jobId, @Valid JobDTO jobDTO) throws JsonProcessingException {
+    public Job updateJob(@PathVariable("jobId") Integer jobId, @Valid @RequestBody JobDTO jobDTO) throws JsonProcessingException {
         return jobHistoryService.updateJob(jobDTO, jobId);
     }
 

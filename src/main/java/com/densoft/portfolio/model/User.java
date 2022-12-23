@@ -34,7 +34,7 @@ public class User extends BaseEntity {
     @Column(nullable = false, length = 1000)
     private String skills;
 
-    @Column(nullable = false, length = 30)
+    @Column(length = 30)
     private String password;
 
     public User(String firstName, String lastName, String email, String phone, String socialMediaLinks, String resumePath, String personalStatement, String skills) {

@@ -29,12 +29,12 @@ public class EducationHistoryController {
     }
 
     @PostMapping
-    public Education createEducation(@Valid EducationDTO educationDTO) {
+    public Education createEducation(@Valid @RequestBody EducationDTO educationDTO) {
         return educationHistoryService.createEducationHistory(educationDTO);
     }
 
     @PutMapping("{educationHistId}")
-    public Education updateEducation(@Valid EducationDTO educationDTO, @PathVariable("educationHistId") Integer educationHistId) {
+    public Education updateEducation(@Valid @RequestBody EducationDTO educationDTO, @PathVariable("educationHistId") Integer educationHistId) {
         return educationHistoryService.updateEducationHistory(educationDTO, educationHistId);
     }
 

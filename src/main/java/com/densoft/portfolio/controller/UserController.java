@@ -1,11 +1,13 @@
 package com.densoft.portfolio.controller;
 
+import com.densoft.portfolio.dto.ProfileResponse;
 import com.densoft.portfolio.dto.UserCreateDTO;
 import com.densoft.portfolio.dto.UserUpdateDTO;
 import com.densoft.portfolio.model.User;
 import com.densoft.portfolio.restClient.RestService;
 import com.densoft.portfolio.service.user.UserService;
 import com.densoft.portfolio.utils.AWSS3Util;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,7 +16,7 @@ import javax.validation.Valid;
 import java.io.IOException;
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/profile")
 public class UserController {
 
     private final AWSS3Util awss3Util;
@@ -30,12 +32,12 @@ public class UserController {
     }
 
     @GetMapping
-    public User getProfile() {
+    public ProfileResponse getProfile() throws JsonProcessingException {
         return userService.getProfile();
     }
 
     @PostMapping
-    public User createProfile(@Valid UserCreateDTO userCreateDTO) throws IOException {
+    public ProfileResponse createProfile(@Valid UserCreateDTO userCreateDTO) throws IOException {
         return userService.createProfile(userCreateDTO);
     }
 

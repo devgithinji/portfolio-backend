@@ -1,11 +1,13 @@
 package com.densoft.portfolio.service.user;
 
+import com.densoft.portfolio.dto.ProfileResponse;
 import com.densoft.portfolio.dto.UserCreateDTO;
 import com.densoft.portfolio.dto.UserUpdateDTO;
 import com.densoft.portfolio.exceptions.ResourceNotFoundException;
 import com.densoft.portfolio.model.User;
 import com.densoft.portfolio.repository.UserRepository;
 import com.densoft.portfolio.utils.AWSS3Util;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.services.s3.model.ObjectCannedACL;
@@ -27,7 +29,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User createProfile(UserCreateDTO userCreateDTO) throws IOException {
+    public ProfileResponse createProfile(UserCreateDTO userCreateDTO) throws IOException {
         String filePath = awss3Util.uploadFile("profile", userCreateDTO.getResume(), ObjectCannedACL.PRIVATE);
         User user = new User(
                 userCreateDTO.getFirstName(),
@@ -39,13 +41,14 @@ public class UserServiceImpl implements UserService {
                 userCreateDTO.getPersonalStatement(),
                 objectMapper.writeValueAsString(userCreateDTO.getSkills())
         );
-        return userRepository.save(user);
+        return new ProfileResponse(userRepository.save(user),objectMapper);
     }
 
     @Override
-    public User getProfile() {
+    public ProfileResponse getProfile() throws JsonProcessingException {
         Integer userId = 1;
-        return userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("user", "Id", String.valueOf(userId)));
+        User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("user", "Id", String.valueOf(userId)));
+        return new ProfileResponse(user, objectMapper);
     }
 
     @Override
