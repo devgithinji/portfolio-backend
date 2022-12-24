@@ -2,6 +2,8 @@ package com.densoft.portfolio.controller;
 
 import com.densoft.portfolio.dto.JwtAuthResponse;
 import com.densoft.portfolio.dto.LoginDTO;
+import com.densoft.portfolio.dto.UserResponse;
+import com.densoft.portfolio.model.User;
 import com.densoft.portfolio.security.JwtTokenProvider;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,11 +38,11 @@ public class AuthController {
         );
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
         //get token from token provider
         String token = jwtTokenProvider.generateToken(authentication);
-        System.out.println("here three");
-        System.out.println(token);
 
-        return new ResponseEntity<>(new JwtAuthResponse(token), HttpStatus.OK);
+        return new ResponseEntity<>(new JwtAuthResponse(token, new UserResponse(user.getFirstName(), user.getLastName(), user.getEmail())), HttpStatus.OK);
     }
 }
