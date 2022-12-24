@@ -2,7 +2,6 @@ package com.densoft.portfolio.controller;
 
 import com.densoft.portfolio.dto.JwtAuthResponse;
 import com.densoft.portfolio.dto.LoginDTO;
-import com.densoft.portfolio.model.User;
 import com.densoft.portfolio.security.JwtTokenProvider;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,25 +32,15 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<JwtAuthResponse> authenticateUser(@Valid @RequestBody LoginDTO loginDTO) {
         Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginDTO.getPassword(), loginDTO.getPassword())
+                new UsernamePasswordAuthenticationToken(loginDTO.getEmail(), loginDTO.getPassword())
         );
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         //get token from token provider
         String token = jwtTokenProvider.generateToken(authentication);
+        System.out.println("here three");
+        System.out.println(token);
 
         return new ResponseEntity<>(new JwtAuthResponse(token), HttpStatus.OK);
-    }
-
-    @PostMapping("/register")
-    public ResponseEntity<String> registerUser(@Valid @RequestBody LoginDTO loginDTO) {
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginDTO.getPassword(), loginDTO.getPassword())
-        );
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        User user = (User) authentication.getPrincipal();
-
-
-        return new ResponseEntity<>(user.getFirstName() + " signed in successfully", HttpStatus.OK);
     }
 }

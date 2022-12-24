@@ -14,18 +14,17 @@ public class JwtTokenProvider {
     @Value("${app.jwt-secret}")
     private String jwtSecret;
     @Value("${app.jwt-expiration-miliseconds}")
-    private String jwtExpirationInMs;
+    private int jwtExpirationInMs;
 
     //generate token
     public String generateToken(Authentication authentication) {
+
         String username = authentication.getName();
-        Date currDate = new Date();
-        Date expireDate = new Date(currDate.getTime() + jwtExpirationInMs);
 
         return Jwts.builder()
                 .setSubject(username)
-                .setIssuedAt(new Date())
-                .setExpiration(expireDate)
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + jwtExpirationInMs))
                 .signWith(SignatureAlgorithm.HS512, jwtSecret)
                 .compact();
     }
