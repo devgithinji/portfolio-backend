@@ -5,6 +5,7 @@ import com.densoft.portfolio.dto.PostResponse;
 import com.densoft.portfolio.model.Post;
 import com.densoft.portfolio.service.blog.PostService;
 import com.densoft.portfolio.utils.AppConstants;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -20,6 +21,7 @@ public class PostController {
     }
 
     @GetMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public PostResponse getPosts(@RequestParam(value = "PageNo", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) Integer pageNo,
                                  @RequestParam(value = "pageSize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) Integer pageSize,
                                  @RequestParam(value = "sortBy", defaultValue = AppConstants.DEFAULT_SORT_BY, required = false) String sortBy,
