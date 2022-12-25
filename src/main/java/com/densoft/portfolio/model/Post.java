@@ -25,9 +25,12 @@ public class Post extends BaseEntity {
     private String content;
     @Column(name = "blog_url", length = 100)
     private String blogUrl;
+    @Column(name = "blog_id", length = 100)
+    private Integer blogId;
 
     @Column(columnDefinition = "boolean default false")
     private Boolean published;
+
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = {
             CascadeType.PERSIST,

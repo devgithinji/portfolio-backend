@@ -17,6 +17,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -101,6 +102,11 @@ public class PostServiceImpl implements PostService {
         post.setContent(post.getContent());
         //save tag
         post.setTag(util.generateTags(new String[]{postDTO.getTag()}).stream().toList().get(0));
+        if (post.getBlogId() != null) {
+            //update on dev blog
+            restService.updatePost(postDTO, post.getBlogId(), false);
+        }
+
         return postRepository.save(post);
     }
 
@@ -113,6 +119,11 @@ public class PostServiceImpl implements PostService {
             awss3Util.deleteFile(image.getPath());
         });
 
+        //un-publish post
+        if (post.getBlogId() != null) {
+            restService.updatePost(new PostDTO(post.getTitle(), post.getContent(), post.getTag().getName()), post.getBlogId(), true);
+        }
+
         postRepository.deleteById(post.getId());
     }
 
@@ -120,9 +131,10 @@ public class PostServiceImpl implements PostService {
     @Override
     public String publishOnDevBlog(Integer postId) {
         Post post = getExistingPostById(postId);
-        if(post.getBlogUrl() != null && !post.getBlogUrl().isBlank()) throw new ApIException("post already published");
-        String url = restService.createPost(new PostDTO(post.getTitle(), post.getContent(), post.getTag().getName()));
-        post.setBlogUrl(url);
+        if (post.getBlogId() != null) throw new ApIException("post already published");
+        Map<String, String> response = restService.createPost(new PostDTO(post.getTitle(), post.getContent(), post.getTag().getName()));
+        post.setBlogUrl(response.get("url"));
+        post.setBlogId(Integer.parseInt(response.get("blogId")));
         Post updatedPost = postRepository.save(post);
         return updatedPost.getBlogUrl();
     }
