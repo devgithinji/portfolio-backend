@@ -20,5 +20,5 @@ public interface PostService {
 
     void deletePost(int postId);
 
-    Post publishOnMedium(Integer postId);
+    String publishOnDevBlog(Integer postId);
 }

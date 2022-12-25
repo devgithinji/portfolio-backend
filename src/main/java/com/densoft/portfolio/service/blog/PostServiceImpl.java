@@ -118,11 +118,13 @@ public class PostServiceImpl implements PostService {
 
 
     @Override
-    public Post publishOnMedium(Integer postId) {
+    public String publishOnDevBlog(Integer postId) {
         Post post = getExistingPostById(postId);
-//        PostResponse postResponse = restService.createPost(new PostDTO(post.getTitle(), "html", post.getContent(), post.getTagsList()));
-//        post.setMediumUrl(postResponse.getData().getUrl());
-        return postRepository.save(post);
+        if(post.getBlogUrl() != null && !post.getBlogUrl().isBlank()) throw new ApIException("post already published");
+        String url = restService.createPost(new PostDTO(post.getTitle(), post.getContent(), post.getTag().getName()));
+        post.setBlogUrl(url);
+        Post updatedPost = postRepository.save(post);
+        return updatedPost.getBlogUrl();
     }
 
     private Post getExistingPostById(Integer postId) {

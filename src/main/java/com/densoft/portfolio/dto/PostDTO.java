@@ -16,8 +16,8 @@ public class PostDTO {
     @NotBlank(message = "Post title is required")
     @Size(min = 10, max = 50, message = "Post title should be at least 10 characters")
     private String title;
-    @NotBlank(message = "Post description is required")
-    @Size(min = 50, max = 3000, message = "Post description should be at least 50 characters")
+    @NotBlank(message = "Post content is required")
+    @Size(min = 50, max = 3000, message = "Post content should be at least 50 characters")
     private String content;
 
     @SingleTagValidator

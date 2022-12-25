@@ -6,9 +6,12 @@ import com.densoft.portfolio.model.Post;
 import com.densoft.portfolio.service.blog.PostService;
 import com.densoft.portfolio.utils.AppConstants;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/posts")
@@ -60,8 +63,12 @@ public class PostController {
         return "post deleted successfully";
     }
 
-    @GetMapping("publish-medium/{postId}")
-    public Post publishOnMedium(@PathVariable("postId") Integer integer) {
-        return postService.publishOnMedium(integer);
+    @GetMapping("publish-on-dev-blog/{postId}")
+    public ResponseEntity<Object> publishOnDevBlog(@PathVariable("postId") Integer integer) {
+        String url = postService.publishOnDevBlog(integer);
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "post published successfully");
+        response.put("url", url);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }
