@@ -1,20 +1,22 @@
 package com.densoft.portfolio.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
 @Entity
 @Data
 @Table(name = "images")
+@NoArgsConstructor
 public class Image extends BaseEntity {
     @Column(nullable = false, length = 60)
     private String path;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
-    @JsonIgnoreProperties({"images"})
+    @JsonIgnore
     private Post post;
 
     public Image(String path, Post post) {

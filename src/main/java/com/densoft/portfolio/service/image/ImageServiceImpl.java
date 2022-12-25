@@ -29,7 +29,7 @@ public class ImageServiceImpl implements ImageService {
 
     @Override
     public Image saveImage(ImageDTO imageDTO) throws IOException {
-        Post post = postRepository.findById(imageDTO.getPostId()).orElseThrow(() -> new ResourceNotFoundException("post", "Id", String.valueOf(imageDTO.getPostId())));
+        Post post = postRepository.findById(Integer.parseInt(imageDTO.getPostId())).orElseThrow(() -> new ResourceNotFoundException("post", "Id", String.valueOf(imageDTO.getPostId())));
         String filePath = awss3Util.uploadFile("posts", imageDTO.getImage(), ObjectCannedACL.PUBLIC_READ);
         Image image = new Image(filePath, post);
         return imageRepository.save(image);
