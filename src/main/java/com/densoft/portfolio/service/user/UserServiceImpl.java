@@ -9,6 +9,8 @@ import com.densoft.portfolio.repository.UserRepository;
 import com.densoft.portfolio.utils.AWSS3Util;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.services.s3.model.ObjectCannedACL;
 
@@ -18,19 +20,17 @@ import java.io.IOException;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
-    private final AWSS3Util awss3Util;
 
     private final ObjectMapper objectMapper;
 
-    public UserServiceImpl(UserRepository userRepository, AWSS3Util awss3Util, ObjectMapper objectMapper) {
+    public UserServiceImpl(UserRepository userRepository, ObjectMapper objectMapper) {
         this.userRepository = userRepository;
-        this.awss3Util = awss3Util;
         this.objectMapper = objectMapper;
     }
 
     @Override
     public ProfileResponse createProfile(UserCreateDTO userCreateDTO) throws IOException {
-        String filePath = awss3Util.uploadFile("profile", userCreateDTO.getResume(), ObjectCannedACL.PRIVATE);
+        String filePath = AWSS3Util.uploadFile("profile", userCreateDTO.getResume(), ObjectCannedACL.PUBLIC_READ);
         User user = new User(
                 userCreateDTO.getFirstName(),
                 userCreateDTO.getLastName(),
@@ -41,7 +41,7 @@ public class UserServiceImpl implements UserService {
                 userCreateDTO.getPersonalStatement(),
                 objectMapper.writeValueAsString(userCreateDTO.getSkills())
         );
-        return new ProfileResponse(userRepository.save(user),objectMapper);
+        return new ProfileResponse(userRepository.save(user), objectMapper);
     }
 
     @Override
@@ -52,12 +52,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User updateUser(UserUpdateDTO userUpdateDTO) throws IOException {
+    public ProfileResponse updateUser(UserUpdateDTO userUpdateDTO) throws IOException {
         //get auth user
-        User user = new User();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User user = (User) authentication.getPrincipal();
         if (userUpdateDTO.getResume() != null && !userUpdateDTO.getResume().isEmpty()) {
-            awss3Util.deleteFile(user.getResumePath());
-            String filePath = awss3Util.uploadFile("profile", userUpdateDTO.getResume(), ObjectCannedACL.PRIVATE);
+            AWSS3Util.deleteFile(user.getResumePath());
+            String filePath = AWSS3Util.uploadFile("profile", userUpdateDTO.getResume(), ObjectCannedACL.PUBLIC_READ);
             user.setResumePath(filePath);
         }
         user.setFirstName(userUpdateDTO.getFirstName());
@@ -65,9 +66,11 @@ public class UserServiceImpl implements UserService {
         user.setEmail(userUpdateDTO.getEmail());
         user.setPhone(userUpdateDTO.getPhone());
         user.setSocialMediaLinks(objectMapper.writeValueAsString(userUpdateDTO.getSocialMediaLinks()));
-        user.setPersonalStatement(user.getPersonalStatement());
+        user.setPersonalStatement(userUpdateDTO.getPersonalStatement());
         user.setSkills(objectMapper.writeValueAsString(userUpdateDTO.getSkills()));
 
-        return userRepository.save(user);
+        User updatedUser = userRepository.save(user);
+
+        return new ProfileResponse(updatedUser, objectMapper);
     }
 }

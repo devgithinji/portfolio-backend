@@ -1,6 +1,7 @@
 package com.densoft.portfolio.service.blog;
 
-import com.densoft.portfolio.dto.PostDTO;
+import com.densoft.portfolio.dto.PostCreateDTO;
+import com.densoft.portfolio.dto.PostUpdateDTO;
 import com.densoft.portfolio.dto.PostResponse;
 import com.densoft.portfolio.model.Post;
 
@@ -12,11 +13,11 @@ public interface PostService {
 
     Post getPostBySlug(String slug);
 
-    Post createPost(PostDTO postDTO);
+    Post createPost(PostCreateDTO postDTO);
 
     Post togglePublishStatus(Integer postId);
 
-    Post updatePost(PostDTO postDTO, Integer postId);
+    Post updatePost(PostUpdateDTO postDTO, Integer postId);
 
     void deletePost(int postId);
 

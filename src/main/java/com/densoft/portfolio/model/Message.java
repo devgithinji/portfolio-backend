@@ -14,6 +14,8 @@ import javax.persistence.Table;
 public class Message extends BaseEntity {
 
     @Column(nullable = false, length = 30)
+    private String name;
+    @Column(nullable = false, length = 30)
     private String email;
 
     @Column(nullable = false, length = 500)
@@ -22,7 +24,8 @@ public class Message extends BaseEntity {
     @Column(columnDefinition = "boolean default false")
     private boolean isRead;
 
-    public Message(String email, String message) {
+    public Message(String name, String email, String message) {
+        this.name = name;
         this.email = email;
         this.message = message;
         this.isRead = false;

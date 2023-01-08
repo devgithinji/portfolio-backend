@@ -22,7 +22,6 @@ public class TagConstraintValidator implements ConstraintValidator<TagConstraint
 
     @Override
     public boolean isValid(String[] strings, ConstraintValidatorContext constraintValidatorContext) {
-
         if(strings == null || strings.length == 0) return false;
         for (String tag : strings) {
             if (!tagList.contains(tag.toLowerCase())) return false;

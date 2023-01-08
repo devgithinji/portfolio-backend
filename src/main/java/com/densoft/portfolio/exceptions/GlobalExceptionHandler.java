@@ -22,7 +22,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<ErrorDetails> handleResourceNotFoundException(ResourceNotFoundException resourceNotFoundException, WebRequest webRequest) {
-        ErrorDetails errorDetails = new ErrorDetails(resourceNotFoundException.getMessage(), webRequest.getDescription(false), new Date());
+        ErrorDetails errorDetails = new ErrorDetails(webRequest.getDescription(false),resourceNotFoundException.getMessage(), new Date());
         return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
     }
 
@@ -56,7 +56,6 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         response.put("timestamp", new Date());
         response.put("errors", errors);
         response.put("details", request.getDescription(false));
-
 
         return new ResponseEntity<>(response, HttpStatus.UNPROCESSABLE_ENTITY);
     }

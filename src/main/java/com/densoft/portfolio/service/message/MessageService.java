@@ -3,6 +3,7 @@ package com.densoft.portfolio.service.message;
 import com.densoft.portfolio.dto.MessageDTO;
 import com.densoft.portfolio.model.Message;
 
+import javax.mail.MessagingException;
 import java.util.List;
 
 public interface MessageService {
@@ -11,7 +12,7 @@ public interface MessageService {
 
     Message getMessage(Integer messageId);
 
-    Message createMessage(MessageDTO messageDTO);
+    Message createMessage(MessageDTO messageDTO) throws MessagingException;
 
     void updateReadStatus(Integer messageId);
 

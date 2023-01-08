@@ -19,18 +19,16 @@ public class ImageServiceImpl implements ImageService {
 
     private final PostRepository postRepository;
 
-    private final AWSS3Util awss3Util;
 
-    public ImageServiceImpl(ImageRepository imageRepository, PostRepository postRepository, AWSS3Util awss3Util) {
+    public ImageServiceImpl(ImageRepository imageRepository, PostRepository postRepository) {
         this.imageRepository = imageRepository;
         this.postRepository = postRepository;
-        this.awss3Util = awss3Util;
     }
 
     @Override
     public Image saveImage(ImageDTO imageDTO) throws IOException {
         Post post = postRepository.findById(Integer.parseInt(imageDTO.getPostId())).orElseThrow(() -> new ResourceNotFoundException("post", "Id", String.valueOf(imageDTO.getPostId())));
-        String filePath = awss3Util.uploadFile("posts", imageDTO.getImage(), ObjectCannedACL.PUBLIC_READ);
+        String filePath = AWSS3Util.uploadFile("posts", imageDTO.getImage(), ObjectCannedACL.PUBLIC_READ);
         Image image = new Image(filePath, post);
         return imageRepository.save(image);
     }
@@ -38,7 +36,7 @@ public class ImageServiceImpl implements ImageService {
     @Override
     public void deleteImage(Integer imageId) {
         Image image = imageRepository.findById(imageId).orElseThrow(() -> new ResourceNotFoundException("image", "Id", String.valueOf(imageId)));
-        awss3Util.deleteFile(image.getPath());
+        AWSS3Util.deleteFile(image.getPath());
         imageRepository.deleteById(imageId);
     }
 }

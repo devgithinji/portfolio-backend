@@ -1,6 +1,7 @@
 package com.densoft.portfolio.controller;
 
-import com.densoft.portfolio.dto.PostDTO;
+import com.densoft.portfolio.dto.PostCreateDTO;
+import com.densoft.portfolio.dto.PostUpdateDTO;
 import com.densoft.portfolio.dto.PostResponse;
 import com.densoft.portfolio.model.Post;
 import com.densoft.portfolio.service.blog.PostService;
@@ -43,7 +44,7 @@ public class PostController {
     }
 
     @PostMapping
-    public Post createPost(@Valid @RequestBody PostDTO blogDTO) {
+    public Post createPost(@Valid @RequestBody PostCreateDTO blogDTO) {
         return postService.createPost(blogDTO);
     }
 
@@ -53,7 +54,7 @@ public class PostController {
     }
 
     @PutMapping("{postId}")
-    public Post updatePost(@Valid @RequestBody PostDTO postDTO, @PathVariable("postId") Integer postId) {
+    public Post updatePost(@Valid @RequestBody PostUpdateDTO postDTO, @PathVariable("postId") Integer postId) {
         return postService.updatePost(postDTO, postId);
     }
 

@@ -1,5 +1,6 @@
 package com.densoft.portfolio.model;
 
+import com.densoft.portfolio.utils.AWSS3Util;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -22,5 +23,9 @@ public class Image extends BaseEntity {
     public Image(String path, Post post) {
         this.path = path;
         this.post = post;
+    }
+
+    public String getPath() {
+        return AWSS3Util.getFileUrl(path);
     }
 }

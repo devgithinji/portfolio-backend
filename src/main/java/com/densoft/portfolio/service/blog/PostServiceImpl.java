@@ -1,6 +1,7 @@
 package com.densoft.portfolio.service.blog;
 
-import com.densoft.portfolio.dto.PostDTO;
+import com.densoft.portfolio.dto.PostCreateDTO;
+import com.densoft.portfolio.dto.PostUpdateDTO;
 import com.densoft.portfolio.dto.PostResponse;
 import com.densoft.portfolio.exceptions.ApIException;
 import com.densoft.portfolio.exceptions.ResourceNotFoundException;
@@ -31,15 +32,13 @@ public class PostServiceImpl implements PostService {
 
     private final Util util;
 
-    private final AWSS3Util awss3Util;
 
 
-    public PostServiceImpl(PostRepository postRepository, TagRepository tagRepository, RestService restService, Util util, AWSS3Util awss3Util) {
+    public PostServiceImpl(PostRepository postRepository, TagRepository tagRepository, RestService restService, Util util) {
         this.postRepository = postRepository;
         this.tagRepository = tagRepository;
         this.restService = restService;
         this.util = util;
-        this.awss3Util = awss3Util;
     }
 
     @Override
@@ -73,11 +72,11 @@ public class PostServiceImpl implements PostService {
 
 
     @Override
-    public Post createPost(PostDTO postDTO) {
+    public Post createPost(PostCreateDTO postDTO) {
         Optional<Post> post = postRepository.findPostByTitle(postDTO.getTitle());
         if (post.isPresent()) throw new ApIException("Post title is already used");
 
-        Post newpost = new Post(postDTO.getTitle(), Util.generateSlug(postDTO.getTitle()), postDTO.getContent());
+        Post newpost = new Post(postDTO.getTitle(), Util.generateSlug(postDTO.getTitle()));
         newpost.setPublished(true);
         //save tag
         newpost.setTag(util.generateTags(new String[]{postDTO.getTag()}).stream().toList().get(0));
@@ -92,14 +91,14 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Post updatePost(PostDTO postDTO, Integer postId) {
+    public Post updatePost(PostUpdateDTO postDTO, Integer postId) {
         Post post = getExistingPostById(postId);
         //check if title is taken
         Optional<Post> postWithTitle = postRepository.findPostWithMatchingTitle(postDTO.getTitle(), postId);
         if (postWithTitle.isPresent()) throw new ApIException("Post title is already taken");
         post.setTitle(postDTO.getTitle());
         post.setSlug(Util.generateSlug(postDTO.getTitle()));
-        post.setContent(post.getContent());
+        post.setContent(postDTO.getContent());
         //save tag
         post.setTag(util.generateTags(new String[]{postDTO.getTag()}).stream().toList().get(0));
         if (post.getBlogId() != null) {
@@ -116,12 +115,12 @@ public class PostServiceImpl implements PostService {
         Post post = getExistingPostById(postId);
         //delete all images
         post.getImages().stream().forEach(image -> {
-            awss3Util.deleteFile(image.getPath());
+            AWSS3Util.deleteFile(image.getPath());
         });
 
         //un-publish post
         if (post.getBlogId() != null) {
-            restService.updatePost(new PostDTO(post.getTitle(), post.getContent(), post.getTag().getName()), post.getBlogId(), true);
+            restService.updatePost(new PostUpdateDTO(post.getTitle(), post.getContent(), post.getTag().getName()), post.getBlogId(), true);
         }
 
         postRepository.deleteById(post.getId());
@@ -132,7 +131,7 @@ public class PostServiceImpl implements PostService {
     public String publishOnDevBlog(Integer postId) {
         Post post = getExistingPostById(postId);
         if (post.getBlogId() != null) throw new ApIException("post already published");
-        Map<String, String> response = restService.createPost(new PostDTO(post.getTitle(), post.getContent(), post.getTag().getName()));
+        Map<String, String> response = restService.createPost(new PostUpdateDTO(post.getTitle(), post.getContent(), post.getTag().getName()));
         post.setBlogUrl(response.get("url"));
         post.setBlogId(Integer.parseInt(response.get("blogId")));
         Post updatedPost = postRepository.save(post);

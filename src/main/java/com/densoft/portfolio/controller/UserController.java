@@ -3,7 +3,6 @@ package com.densoft.portfolio.controller;
 import com.densoft.portfolio.dto.ProfileResponse;
 import com.densoft.portfolio.dto.UserCreateDTO;
 import com.densoft.portfolio.dto.UserUpdateDTO;
-import com.densoft.portfolio.model.User;
 import com.densoft.portfolio.restClient.RestService;
 import com.densoft.portfolio.service.user.UserService;
 import com.densoft.portfolio.utils.AWSS3Util;
@@ -19,14 +18,12 @@ import java.io.IOException;
 @RequestMapping("/profile")
 public class UserController {
 
-    private final AWSS3Util awss3Util;
 
     private final RestService restService;
 
     private final UserService userService;
 
-    public UserController(AWSS3Util awss3Util, RestService restService, UserService userService) {
-        this.awss3Util = awss3Util;
+    public UserController(RestService restService, UserService userService) {
         this.restService = restService;
         this.userService = userService;
     }
@@ -42,13 +39,13 @@ public class UserController {
     }
 
     @PutMapping
-    public User updateUser(@Valid UserUpdateDTO userUpdateDTO) throws IOException {
+    public ProfileResponse updateUser(@Valid UserUpdateDTO userUpdateDTO) throws IOException {
         return userService.updateUser(userUpdateDTO);
     }
 
     @GetMapping(value = "/download-resume")
     public ResponseEntity<ByteArrayResource> downloadFile(@RequestParam("fileName") String fileName) {
-        final byte[] data = awss3Util.downloadFile(fileName);
+        final byte[] data = AWSS3Util.downloadFile(fileName);
         final ByteArrayResource resource = new ByteArrayResource(data);
         return ResponseEntity.ok().contentLength(data.length)
                 .header("Content-type", "application/octet-stream")

@@ -21,7 +21,7 @@ public class Post extends BaseEntity {
 
     @Column(nullable = false, length = 100)
     private String slug;
-    @Column(nullable = false, length = 3000)
+    @Column(nullable = true, length = 3000)
     private String content;
     @Column(name = "blog_url", length = 100)
     private String blogUrl;
@@ -51,5 +51,11 @@ public class Post extends BaseEntity {
         this.slug = slug;
         this.content = content;
     }
+
+    public Post(String title, String slug) {
+        this.title = title;
+        this.slug = slug;
+    }
+
 
 }

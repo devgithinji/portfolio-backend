@@ -5,6 +5,7 @@ import com.densoft.portfolio.model.Message;
 import com.densoft.portfolio.service.message.MessageService;
 import org.springframework.web.bind.annotation.*;
 
+import javax.mail.MessagingException;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -29,7 +30,7 @@ public class MessageController {
     }
 
     @PostMapping
-    private Message createMessage(@Valid MessageDTO messageDTO) {
+    private Message createMessage(@Valid @RequestBody MessageDTO messageDTO) throws MessagingException {
         return messageService.createMessage(messageDTO);
     }
 

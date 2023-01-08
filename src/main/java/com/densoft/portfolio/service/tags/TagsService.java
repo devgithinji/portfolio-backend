@@ -7,4 +7,10 @@ import java.util.List;
 public interface TagsService {
 
     List<Tag> getTags();
+
+    Tag createTag(String tagName);
+
+    Tag updateTag(String tagName, Integer tagId);
+
+    void deleteTag(Integer tagId);
 }

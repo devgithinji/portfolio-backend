@@ -13,7 +13,7 @@ public abstract class ProjectBaseDTO {
     @Size(min = 5, max = 50, message = "name should be between 5 to 50 characters")
     private String name;
     @NotBlank(message = "project description is required")
-    @Size(min = 5, max = 100, message = "description should be between 5 to 100 characters")
+    @Size(min = 5, max = 200, message = "description should be between 5 to 100 characters")
     private String description;
     @NotBlank(message = "project link is required")
     private String siteLink;

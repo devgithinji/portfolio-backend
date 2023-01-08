@@ -17,7 +17,7 @@ import java.util.Set;
 public class Project extends BaseEntity {
     @Column(nullable = false, length = 50)
     private String name;
-    @Column(nullable = false, length = 100)
+    @Column(nullable = false, length = 200)
     private String description;
     @Column(nullable = false, length = 50, name = "site_link")
     private String siteLink;
@@ -42,6 +42,10 @@ public class Project extends BaseEntity {
         this.repoLink = repoLink;
         this.image = image;
         this.published = published;
+    }
+
+    public String getImage() {
+        return image;
     }
 
     public void addTags(Set<Tag> tags) {

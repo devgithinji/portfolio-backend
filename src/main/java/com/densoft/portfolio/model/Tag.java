@@ -1,5 +1,6 @@
 package com.densoft.portfolio.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,13 +20,17 @@ public class Tag extends BaseEntity {
     @Column(nullable = false, unique = true, length = 30)
     private String name;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "tag", fetch = FetchType.LAZY)
     @JsonIgnoreProperties("tags")
     private Set<Post> posts = new HashSet<>();
 
+    @JsonIgnore
     @ManyToMany(mappedBy = "tags", fetch = FetchType.LAZY)
     @JsonIgnoreProperties("tags")
     private Set<Project> projects = new HashSet<>();
+
+
 
 
     public Tag(String name) {

@@ -4,13 +4,19 @@ import com.densoft.portfolio.dto.MessageDTO;
 import com.densoft.portfolio.exceptions.ResourceNotFoundException;
 import com.densoft.portfolio.model.Message;
 import com.densoft.portfolio.repository.MessageRepository;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
 import java.util.List;
 
 @Service
 public class MessageServiceImpl implements MessageService {
-
+    @Value("${spring.mail.username}")
+    String sender;
     private final MessageRepository messageRepository;
 
     public MessageServiceImpl(MessageRepository messageRepository) {
@@ -29,8 +35,17 @@ public class MessageServiceImpl implements MessageService {
 
 
     @Override
-    public Message createMessage(MessageDTO messageDTO) {
-        Message message = new Message(messageDTO.getEmail(), messageDTO.getMessage());
+    public Message createMessage(MessageDTO messageDTO) throws MessagingException {
+        Message message = new Message(messageDTO.getName(), messageDTO.getEmail(), messageDTO.getMessage());
+        JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
+        String emailFrom = message.getEmail();
+        MimeMessage mimeMessage = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(mimeMessage);
+        helper.setSubject("Portfolio Contact");
+        helper.setFrom(emailFrom);
+        helper.setTo(sender);
+        helper.setText("<p>" + message.getMessage() + "</p>", true);
+        mailSender.send(mimeMessage);
         return messageRepository.save(message);
     }
 

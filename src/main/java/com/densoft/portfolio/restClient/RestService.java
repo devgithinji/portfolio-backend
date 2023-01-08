@@ -1,7 +1,7 @@
 package com.densoft.portfolio.restClient;
 
 
-import com.densoft.portfolio.dto.PostDTO;
+import com.densoft.portfolio.dto.PostUpdateDTO;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -18,7 +18,7 @@ public class RestService {
     }
 
 
-    public Map<String, String> createPost(PostDTO postDTO) {
+    public Map<String, String> createPost(PostUpdateDTO postDTO) {
         Map<String, Object> requestBody = getRequestBody(postDTO, false);
         Map response = webClient.post().uri("/articles").bodyValue(requestBody).retrieve().bodyToMono(Map.class).block();
         Map<String, String> data = new HashMap<>();
@@ -27,7 +27,7 @@ public class RestService {
         return data;
     }
 
-    public void updatePost(PostDTO postDTO, Integer postId, boolean unPublish) {
+    public void updatePost(PostUpdateDTO postDTO, Integer postId, boolean unPublish) {
         Map<String, Object> requestBody = getRequestBody(postDTO, unPublish);
         webClient.put().uri("/articles/" + postId).bodyValue(requestBody).retrieve().bodyToMono(Map.class).block();
     }
@@ -36,7 +36,7 @@ public class RestService {
         webClient.put().uri("/articles/" + postId + "/unpublish").retrieve().bodyToMono(Map.class).block();
     }
 
-    private static Map<String, Object> getRequestBody(PostDTO postDTO, boolean unPublish) {
+    private static Map<String, Object> getRequestBody(PostUpdateDTO postDTO, boolean unPublish) {
         Map<String, Object> requestBody = new HashMap<>();
         Map<String, Object> article = new HashMap<>();
         article.put("title", postDTO.getTitle());

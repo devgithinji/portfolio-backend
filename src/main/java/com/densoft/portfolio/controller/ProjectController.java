@@ -2,6 +2,7 @@ package com.densoft.portfolio.controller;
 
 
 import com.densoft.portfolio.dto.ProjectCreateDTO;
+import com.densoft.portfolio.dto.ProjectResponse;
 import com.densoft.portfolio.dto.ProjectUpdateDTO;
 import com.densoft.portfolio.model.Project;
 import com.densoft.portfolio.service.project.ProjectService;
@@ -25,12 +26,12 @@ public class ProjectController {
 
 
     @GetMapping
-    public List<Project> getAllProjects(@RequestParam(value = "tag", required = false) String tag) {
+    public List<ProjectResponse> getAllProjects(@RequestParam(value = "tag", required = false) String tag) {
         return projectService.getProjects(tag);
     }
 
     @GetMapping("{projectId}")
-    public Project getProject(@PathVariable("projectId") Integer projectId) {
+    public ProjectResponse getProject(@PathVariable("projectId") Integer projectId) {
         return projectService.getProject(projectId);
     }
 
