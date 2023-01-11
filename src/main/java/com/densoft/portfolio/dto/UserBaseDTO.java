@@ -28,7 +28,7 @@ public class UserBaseDTO {
     @NotNull(message = "social media links required")
     private List<@NotBlank(message = "social media links required") String> socialMediaLinks;
     @NotBlank(message = "personal statement is required")
-    @Size(message = "statement should be less than 250 characters", max = 250)
+    @Size(message = "statement should be less than 250 characters", max = 1000)
     private String personalStatement;
     @NotNull(message = "skills required")
     private List<@NotBlank(message = "skills required") String> skills;

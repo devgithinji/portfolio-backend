@@ -52,7 +52,7 @@ public class JobHistoryImpl implements JobHistoryService {
         job.setTitle(jobDTO.getTitle());
         job.setDescription(jobDTO.getDescription());
         job.setAchievements(objectMapper.writeValueAsString(jobDTO.getAchievements()));
-        job.setDurationRange(job.getDurationRange());
+        job.setDurationRange(jobDTO.getDurationRange());
         return jobRepository.save(job);
     }
 

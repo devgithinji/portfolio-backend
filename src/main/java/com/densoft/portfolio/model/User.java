@@ -35,7 +35,7 @@ public class User extends BaseEntity  implements UserDetails {
     @Column(nullable = false, length = 60, name = "resume_path")
     private String resumePath;
 
-    @Column(nullable = false, length = 200, name = "personal_statement")
+    @Column(nullable = false, length = 1000, name = "personal_statement")
     private String personalStatement;
 
     @Column(nullable = false, length = 1000)
