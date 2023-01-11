@@ -1,9 +1,12 @@
 package com.densoft.portfolio.dto;
 
+import com.densoft.portfolio.validators.fileType.FileType;
+import com.densoft.portfolio.validators.fileType.ValidFile;
 import com.densoft.portfolio.validators.tagContraint.SingleTagValidator;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
@@ -13,9 +16,12 @@ import javax.validation.constraints.Size;
 @NoArgsConstructor
 public class PostCreateDTO {
     @NotBlank(message = "Post title is required")
-    @Size(min = 10, max = 50, message = "Post title should be at least 10 characters")
+    @Size(min = 3, max = 100, message = "Post title should be (3 char min, 100 char max)")
     private String title;
 
     @SingleTagValidator
     private String tag;
+
+    @ValidFile(fileType = FileType.IMAGE, message = "image required type: (png/jpeg/jpg) max size: 1MB", maxSize = 1, isRequired = true)
+    MultipartFile image;
 }

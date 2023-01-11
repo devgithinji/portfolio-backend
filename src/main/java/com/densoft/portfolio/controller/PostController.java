@@ -7,11 +7,14 @@ import com.densoft.portfolio.model.Post;
 import com.densoft.portfolio.service.blog.PostService;
 import com.densoft.portfolio.utils.AppConstants;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -25,12 +28,15 @@ public class PostController {
     }
 
     @GetMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public PostResponse getPosts(@RequestParam(value = "PageNo", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) Integer pageNo,
-                                 @RequestParam(value = "pageSize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) Integer pageSize,
-                                 @RequestParam(value = "sortBy", defaultValue = AppConstants.DEFAULT_SORT_BY, required = false) String sortBy,
-                                 @RequestParam(value = "sortDir", defaultValue = AppConstants.DEFAULT_SORT_DIR, required = false) String sortDir) {
-        return postService.getPosts(pageNo, pageSize, sortBy, sortDir);
+    public PostResponse getPosts(@RequestParam(value = "keyWord", required = false) String keyWord,
+                                 @RequestParam(value = "category", defaultValue = AppConstants.DEFAULT_CATEGORY, required = false) String category,
+                                 @RequestParam(value = "pageNo", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) Integer pageNo) {
+        return postService.getPosts(pageNo, category, keyWord);
+    }
+
+    @GetMapping("random")
+    public List<Post> getRandomPosts(@RequestParam(value = "limit", defaultValue = "7", required = false) int limit) {
+        return postService.getRandomPosts(limit);
     }
 
     @GetMapping("admin/{postId}")
@@ -43,8 +49,10 @@ public class PostController {
         return postService.getPostBySlug(postSlug);
     }
 
-    @PostMapping
-    public Post createPost(@Valid @RequestBody PostCreateDTO blogDTO) {
+
+    @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    @ResponseStatus(HttpStatus.CREATED)
+    public Post createPost(@Valid PostCreateDTO blogDTO) throws IOException {
         return postService.createPost(blogDTO);
     }
 
@@ -53,8 +61,8 @@ public class PostController {
         return postService.togglePublishStatus(postId);
     }
 
-    @PutMapping("{postId}")
-    public Post updatePost(@Valid @RequestBody PostUpdateDTO postDTO, @PathVariable("postId") Integer postId) {
+    @PutMapping(value = "{postId}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    public Post updatePost(@Valid PostUpdateDTO postDTO, @PathVariable("postId") Integer postId) throws IOException {
         return postService.updatePost(postDTO, postId);
     }
 

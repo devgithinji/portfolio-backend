@@ -1,13 +1,12 @@
 package com.densoft.portfolio.dto;
 
-import com.densoft.portfolio.model.Tag;
+import com.densoft.portfolio.model.Project;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -15,17 +14,15 @@ import java.util.Set;
 @Component
 public class ProjectResponse {
 
-    private Integer id;
-    private String name;
+    private List<Project> projects;
 
-    private String description;
+    private int pageNo;
 
-    private String siteLink;
+    private int pageSize;
 
-    private String repoLink;
+    private long totalElements;
 
-    private String image;
-    private boolean published;
+    private int totalPages;
 
-    private Set<Tag> tags = new HashSet<>();
+    private boolean last;
 }

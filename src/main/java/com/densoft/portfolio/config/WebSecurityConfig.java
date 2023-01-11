@@ -53,7 +53,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests().antMatchers(GET,
                         "/posts/**",
-                        "/projects",
+                        "/projects/**",
                         "/job-history",
                         "/education",
                         "/profile/**",

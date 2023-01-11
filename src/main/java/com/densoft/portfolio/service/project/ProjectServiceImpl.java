@@ -7,13 +7,17 @@ import com.densoft.portfolio.exceptions.ResourceNotFoundException;
 import com.densoft.portfolio.model.Project;
 import com.densoft.portfolio.repository.ProjectRepository;
 import com.densoft.portfolio.utils.AWSS3Util;
+import com.densoft.portfolio.utils.AppConstants;
 import com.densoft.portfolio.utils.Util;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.services.s3.model.ObjectCannedACL;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class ProjectServiceImpl implements ProjectService {
@@ -23,44 +27,51 @@ public class ProjectServiceImpl implements ProjectService {
 
     private final Util util;
 
-    public ProjectServiceImpl( ProjectRepository projectRepository, Util util) {
+    public ProjectServiceImpl(ProjectRepository projectRepository, Util util) {
         this.projectRepository = projectRepository;
         this.util = util;
     }
 
     @Override
-    public List<ProjectResponse> getProjects(String tag) {
-        if (tag == null) return mapProjectResponse(projectRepository.findAll());
+    public ProjectResponse getProjects(String tag, Integer pageNo) {
+        //create a pageable instance
+        Sort sort = Sort.by(AppConstants.DEFAULT_SORT_BY).descending();
+        Pageable pageable = PageRequest.of(pageNo, Integer.parseInt(AppConstants.DEFAULT_PAGE_SIZE), sort);
+        Page<Project> projectPage;
 
-        return mapProjectResponse(projectRepository.findProjectByTags_Name(tag));
-    }
+        if (tag != null && !tag.equals("All")) {
+            projectPage = projectRepository.findProjectByTags_Name(pageable, tag);
+        } else {
+            projectPage = projectRepository.findAll(pageable);
+        }
 
-    private List<ProjectResponse> mapProjectResponse(List<Project> projects) {
-        return projects.stream().map(this::getProjectResponse).collect(Collectors.toList());
-    }
 
-    private ProjectResponse getProjectResponse(Project project) {
-        ProjectResponse res = new ProjectResponse();
-        res.setId(project.getId());
-        res.setName(project.getName());
-        res.setSiteLink(project.getSiteLink());
-        res.setRepoLink(project.getRepoLink());
-        res.setDescription(project.getDescription());
-        res.setTags(project.getTags());
-        res.setPublished(project.isPublished());
-        res.setImage(AWSS3Util.getFileUrl(project.getImage()));
-        return res;
+        return new ProjectResponse(
+                projectPage.getContent(),
+                projectPage.getNumber(),
+                projectPage.getSize(),
+                projectPage.getTotalElements(),
+                projectPage.getTotalPages(),
+                projectPage.isLast()
+        );
     }
 
     @Override
-    public ProjectResponse getProject(Integer projectId) {
-        return getProjectResponse(getExistingProject(projectId));
+    public List<Project> getRandomProjects(Integer limit) {
+        return projectRepository.findRandomProjects(limit);
+    }
+
+
+    @Override
+    public Project getProject(Integer projectId) {
+        return getExistingProject(projectId);
     }
 
 
     @Override
     public Project createProject(ProjectCreateDTO projectDTO) throws IOException {
         String filePath = AWSS3Util.uploadFile("projects", projectDTO.getImage(), ObjectCannedACL.PUBLIC_READ);
+        System.out.println(filePath);
         Project project = new Project(projectDTO.getName(), projectDTO.getDescription(), projectDTO.getSiteLink(), projectDTO.getRepoLink(), filePath, true);
         //add tags
         project.addTags(util.generateTags(projectDTO.getTags()));

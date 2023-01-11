@@ -12,7 +12,7 @@ import java.util.List;
 public class PostResponse {
     private List<Post> posts;
 
-    private int pagNo;
+    private int pageNo;
 
     private int pageSize;
 

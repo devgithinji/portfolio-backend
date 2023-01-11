@@ -12,7 +12,7 @@ public interface MessageService {
 
     Message getMessage(Integer messageId);
 
-    Message createMessage(MessageDTO messageDTO) throws MessagingException;
+    void createMessage(MessageDTO messageDTO) throws MessagingException;
 
     void updateReadStatus(Integer messageId);
 

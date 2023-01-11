@@ -10,9 +10,11 @@ import java.util.List;
 
 public interface ProjectService {
 
-    List<ProjectResponse> getProjects(String tag);
+    ProjectResponse getProjects(String tag, Integer pageNo);
 
-    ProjectResponse getProject(Integer projectId);
+    List<Project> getRandomProjects(Integer limit);
+
+    Project getProject(Integer projectId);
 
     Project createProject(ProjectCreateDTO projectDTO) throws IOException;
 

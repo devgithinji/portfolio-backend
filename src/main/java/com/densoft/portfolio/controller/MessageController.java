@@ -30,8 +30,9 @@ public class MessageController {
     }
 
     @PostMapping
-    private Message createMessage(@Valid @RequestBody MessageDTO messageDTO) throws MessagingException {
-        return messageService.createMessage(messageDTO);
+    private String createMessage(@Valid @RequestBody MessageDTO messageDTO) throws MessagingException {
+        messageService.createMessage(messageDTO);
+        return "message sent successfully!";
     }
 
     @DeleteMapping("{messageId}")

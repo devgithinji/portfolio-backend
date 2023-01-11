@@ -22,7 +22,6 @@ public class SingleTagConstraintValidator implements ConstraintValidator<SingleT
 
     @Override
     public boolean isValid(String string, ConstraintValidatorContext constraintValidatorContext) {
-
         if (string == null || string.isBlank()) return false;
         return tagList.contains(string.toLowerCase());
     }

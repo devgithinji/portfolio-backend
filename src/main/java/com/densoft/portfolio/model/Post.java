@@ -1,5 +1,6 @@
 package com.densoft.portfolio.model;
 
+import com.densoft.portfolio.utils.AWSS3Util;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,7 +22,10 @@ public class Post extends BaseEntity {
 
     @Column(nullable = false, length = 100)
     private String slug;
-    @Column(nullable = true, length = 3000)
+
+    @Column(length = 100)
+    private String image;
+    @Column(nullable = true, columnDefinition = "TEXT")
     private String content;
     @Column(name = "blog_url", length = 100)
     private String blogUrl;
@@ -46,10 +50,11 @@ public class Post extends BaseEntity {
     private Set<Image> images = new HashSet<>();
 
 
-    public Post(String title, String slug, String content) {
+    public Post(String title, String slug, String content, String image) {
         this.title = title;
         this.slug = slug;
         this.content = content;
+        this.image = image;
     }
 
     public Post(String title, String slug) {
@@ -57,5 +62,9 @@ public class Post extends BaseEntity {
         this.slug = slug;
     }
 
+    public String getImage() {
+        if (image != null) return AWSS3Util.getFileUrl(image);
 
+        return image;
+    }
 }
