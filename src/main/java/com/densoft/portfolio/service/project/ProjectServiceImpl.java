@@ -6,15 +6,14 @@ import com.densoft.portfolio.dto.ProjectUpdateDTO;
 import com.densoft.portfolio.exceptions.ResourceNotFoundException;
 import com.densoft.portfolio.model.Project;
 import com.densoft.portfolio.repository.ProjectRepository;
-import com.densoft.portfolio.utils.AWSS3Util;
 import com.densoft.portfolio.utils.AppConstants;
+import com.densoft.portfolio.utils.CloudinaryUtil;
 import com.densoft.portfolio.utils.Util;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import software.amazon.awssdk.services.s3.model.ObjectCannedACL;
 
 import java.io.IOException;
 import java.util.List;
@@ -69,9 +68,8 @@ public class ProjectServiceImpl implements ProjectService {
 
 
     @Override
-    public Project createProject(ProjectCreateDTO projectDTO) throws IOException {
-        String filePath = AWSS3Util.uploadFile("projects", projectDTO.getImage(), ObjectCannedACL.PUBLIC_READ);
-        System.out.println(filePath);
+    public Project createProject(ProjectCreateDTO projectDTO) {
+        String filePath = CloudinaryUtil.UploadFile(projectDTO.getImage(), "projects", true);
         Project project = new Project(projectDTO.getName(), projectDTO.getDescription(), projectDTO.getSiteLink(), projectDTO.getRepoLink(), filePath, true);
         //add tags
         project.addTags(util.generateTags(projectDTO.getTags()));
@@ -82,8 +80,10 @@ public class ProjectServiceImpl implements ProjectService {
     public Project updateProject(ProjectUpdateDTO projectUpdateDTO, Integer projectId) throws IOException {
         Project project = getExistingProject(projectId);
         if (projectUpdateDTO.getImage() != null) {
-            AWSS3Util.deleteFile(project.getImage());
-            String filePath = AWSS3Util.uploadFile("projects", projectUpdateDTO.getImage(), ObjectCannedACL.PUBLIC_READ);
+            if(project.getImage() != null){
+                CloudinaryUtil.deleteFile(project.getImage());
+            }
+            String filePath = CloudinaryUtil.UploadFile(projectUpdateDTO.getImage(), "projects", true);
             project.setImage(filePath);
         }
 
@@ -110,7 +110,7 @@ public class ProjectServiceImpl implements ProjectService {
     public void deleteProject(Integer projectId) {
         Project project = getExistingProject(projectId);
         if (project.getImage() != null) {
-            AWSS3Util.deleteFile(project.getImage());
+            CloudinaryUtil.deleteFile(project.getImage());
         }
         //clear tags
         project.clearTags();

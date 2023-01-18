@@ -1,6 +1,5 @@
 package com.densoft.portfolio.model;
 
-import com.densoft.portfolio.utils.AWSS3Util;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,7 +23,7 @@ public class Project extends BaseEntity {
     private String siteLink;
     @Column(nullable = false, length = 150, name = "repo_ink")
     private String repoLink;
-    @Column(nullable = false, length = 150)
+    @Column(nullable = false, length = 200)
     private String image;
     @Column(nullable = false, columnDefinition = "boolean default false")
     private boolean published;
@@ -45,10 +44,6 @@ public class Project extends BaseEntity {
         this.published = published;
     }
 
-    public String getImage() {
-        if (image != null) return AWSS3Util.getFileUrl(image);
-        return image;
-    }
 
     public void addTags(Set<Tag> tags) {
         this.tags.addAll(tags);

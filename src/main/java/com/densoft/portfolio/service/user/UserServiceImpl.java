@@ -6,13 +6,12 @@ import com.densoft.portfolio.dto.UserUpdateDTO;
 import com.densoft.portfolio.exceptions.ResourceNotFoundException;
 import com.densoft.portfolio.model.User;
 import com.densoft.portfolio.repository.UserRepository;
-import com.densoft.portfolio.utils.AWSS3Util;
+import com.densoft.portfolio.utils.CloudinaryUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import software.amazon.awssdk.services.s3.model.ObjectCannedACL;
 
 import java.io.IOException;
 
@@ -30,7 +29,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ProfileResponse createProfile(UserCreateDTO userCreateDTO) throws IOException {
-        String filePath = AWSS3Util.uploadFile("profile", userCreateDTO.getResume(), ObjectCannedACL.PUBLIC_READ);
+        String filePath = CloudinaryUtil.UploadFile(userCreateDTO.getResume(), "profile", false);
         User user = new User(
                 userCreateDTO.getFirstName(),
                 userCreateDTO.getLastName(),
@@ -57,8 +56,10 @@ public class UserServiceImpl implements UserService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = (User) authentication.getPrincipal();
         if (userUpdateDTO.getResume() != null && !userUpdateDTO.getResume().isEmpty()) {
-            AWSS3Util.deleteFile(user.getResumePath());
-            String filePath = AWSS3Util.uploadFile("profile", userUpdateDTO.getResume(), ObjectCannedACL.PUBLIC_READ);
+            if(user.getResumePath() != null){
+                CloudinaryUtil.deleteFile(user.getResumePath(),false);
+            }
+            String filePath = CloudinaryUtil.UploadFile(userUpdateDTO.getResume(), "profile", false);
             user.setResumePath(filePath);
         }
         user.setFirstName(userUpdateDTO.getFirstName());

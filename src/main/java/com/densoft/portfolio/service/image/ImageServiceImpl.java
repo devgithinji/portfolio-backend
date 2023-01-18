@@ -6,11 +6,8 @@ import com.densoft.portfolio.model.Image;
 import com.densoft.portfolio.model.Post;
 import com.densoft.portfolio.repository.ImageRepository;
 import com.densoft.portfolio.repository.PostRepository;
-import com.densoft.portfolio.utils.AWSS3Util;
+import com.densoft.portfolio.utils.CloudinaryUtil;
 import org.springframework.stereotype.Service;
-import software.amazon.awssdk.services.s3.model.ObjectCannedACL;
-
-import java.io.IOException;
 
 @Service
 public class ImageServiceImpl implements ImageService {
@@ -26,9 +23,9 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
-    public Image saveImage(ImageDTO imageDTO) throws IOException {
+    public Image saveImage(ImageDTO imageDTO) {
         Post post = postRepository.findById(Integer.parseInt(imageDTO.getPostId())).orElseThrow(() -> new ResourceNotFoundException("post", "Id", String.valueOf(imageDTO.getPostId())));
-        String filePath = AWSS3Util.uploadFile("posts", imageDTO.getImage(), ObjectCannedACL.PUBLIC_READ);
+        String filePath = CloudinaryUtil.UploadFile(imageDTO.getImage(), "posts", true);
         Image image = new Image(filePath, post);
         return imageRepository.save(image);
     }
@@ -36,7 +33,7 @@ public class ImageServiceImpl implements ImageService {
     @Override
     public void deleteImage(Integer imageId) {
         Image image = imageRepository.findById(imageId).orElseThrow(() -> new ResourceNotFoundException("image", "Id", String.valueOf(imageId)));
-        AWSS3Util.deleteFile(image.getPath());
+        CloudinaryUtil.deleteFile(image.getPath());
         imageRepository.deleteById(imageId);
     }
 }

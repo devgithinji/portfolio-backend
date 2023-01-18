@@ -1,7 +1,6 @@
 package com.densoft.portfolio.dto;
 
 import com.densoft.portfolio.model.User;
-import com.densoft.portfolio.utils.AWSS3Util;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Data;
@@ -37,8 +36,5 @@ public class ProfileResponse {
         this.personalStatement = user.getPersonalStatement();
         this.skills = objectMapper.readValue(user.getSkills(), List.class);
     }
-
-    public String getResume() {
-        return AWSS3Util.getFileUrl(resume);
-    }
+    
 }

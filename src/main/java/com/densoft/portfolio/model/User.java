@@ -32,7 +32,7 @@ public class User extends BaseEntity  implements UserDetails {
     @Column(nullable = false, length = 200, name = "social_media_links")
     private String socialMediaLinks;
 
-    @Column(nullable = false, length = 60, name = "resume_path")
+    @Column(nullable = false, length = 200, name = "resume_path")
     private String resumePath;
 
     @Column(nullable = false, length = 1000, name = "personal_statement")
