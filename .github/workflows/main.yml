@@ -66,15 +66,17 @@ jobs:
 
       - name: SSH into EC2 and deploy
         uses: appleboy/ssh-action@v1.0.0
+        env:
+          IMAGE_NAME: ${{secrets.DOCKERHUB_USERNAME}}/portfolio-backend
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_PRIVATE_KEY }}
           envs: IMAGE_NAME
           script: |
-#            pull docker image
+          # pull docker image
             docker pull $IMAGE_NAME:latest
-#            run docker container
+          # run docker container
             docker run -d -p ${{ secrets.SERVER_PORT }}:8080 \
               -e DB_USERNAME="${{ secrets.DB_USERNAME }}" \
               -e DB_PASSWORD="${{ secrets.DB_PASSWORD }}" \
