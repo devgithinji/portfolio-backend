@@ -1,5 +1,5 @@
 # Use the official OpenJDK 17 base image
-FROM adoptopenjdk:17-jre-hotspot
+FROM openjdk:17-jdk-slim
 
 #ENV config
 #db config
