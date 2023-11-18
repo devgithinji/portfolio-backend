@@ -1,0 +1,39 @@
+# Use the official OpenJDK 17 base image
+FROM adoptopenjdk:17-jre-hotspot
+
+#ENV config
+#db config
+ENV DB_USERNAME=${DB_USERNAME}
+ENV DB_PASSWORD=${DB_PASSWORD}
+ENV DB_URL=${DB_URL}
+#dev blog
+ENV DEV_TO_TOKEN=${DEV_TO_TOKEN}
+#AWS
+ENV AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+ENV AWS_REGION=${AWS_REGION}
+ENV AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+ENV AWS_BUCKET_NAME=${AWS_BUCKET_NAME}
+#jwt
+ENV JWT_SECRET=${JWT_SECRET}
+ENV JWT_EXPIRATION=${JWT_EXPRIRATION}
+#mail
+ENV SMTP_MAIL_HOST=${SMTP_MAIL_HOST}
+ENV SMTP_MAIL_PORT=${SMTP_MAIL_PORT}
+ENV SMTP_MAIL_USERNAME=${SMTP_MAIL_USERNAME}
+ENV SMTP_MAIL_PASSWORD=${SMTP_MAIL_PASSWORD}
+#cloudinary
+ENV CLOUDINARY_CLOUD_NAME=${CLOUDINARY_CLOUD_NAME}
+ENV CLOUDINARY_API_KEY=${CLOUDINARY_API_KEY}
+ENV CLOUDINARY_API_SECRET=${CLOUDINARY_API_SECRET}
+
+# Set the working directory inside the container
+WORKDIR /app
+
+# Copy the packaged JAR file into the container at /app
+COPY target/portfolio-0.0.1-SNAPSHOT.jar /app/portfolio-0.0.1-SNAPSHOT.jar
+
+# Expose the port the app runs on
+EXPOSE 8080
+
+# Specify the command to run on container start
+CMD ["java", "-jar", "portfolio-0.0.1-SNAPSHOT.jar"]

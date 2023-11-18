@@ -24,7 +24,7 @@ public class Post extends BaseEntity {
 
     @Column(length = 200)
     private String image;
-    @Column(nullable = true, columnDefinition = "TEXT")
+    @Column(columnDefinition = "TEXT")
     private String content;
     @Column(name = "blog_url", length = 100)
     private String blogUrl;
