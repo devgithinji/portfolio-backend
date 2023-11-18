@@ -72,6 +72,7 @@ jobs:
           key: ${{secrets.EC2_PRIVATE_KEY}}
           script: |
             # Pull the latest Docker image
+            echo ${IMAGE_NAME}
             docker pull ${IMAGE_NAME}:latest
 
             # Run the Docker container with environment variables
