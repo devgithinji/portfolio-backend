@@ -70,8 +70,29 @@ jobs:
           host: ${{secrets.EC2_HOST}}
           username: ${{secrets.EC2_USERNAME}}
           key: ${{secrets.EC2_PRIVATE_KEY}}
+          envs: IMAGE_NAME
           script: |
-            docker pull ${{env.IMAGE_NAME}}:latest
-            docker run -d -p ${SERVER_PORT}:8080 -e DB_USERNAME="${DB_USERNAME}" -e DB_PASSWORD="${DB_PASSWORD}" -e DB_URL="${DB_URL}" -e DEV_TO_TOKEN="${DEV_TO_TOKEN}" -e AWS_ACCESS_KEY_ID="${AWS_ACCESS_KEY_ID}" -e AWS_REGION="${AWS_REGION}" -e AWS_SECRET_ACCESS_KEY="${AWS_SECRET_ACCESS_KEY}" -e AWS_BUCKET_NAME="${AWS_BUCKET_NAME}" -e JWT_SECRET="${JWT_SECRET}" -e JWT_EXPIRATION="${JWT_EXPIRATION}" -e SMTP_MAIL_HOST="${SMTP_MAIL_HOST}" -e SMTP_MAIL_PORT="${SMTP_MAIL_PORT}" -e SMTP_MAIL_USERNAME="${SMTP_MAIL_USERNAME}" -e SMTP_MAIL_PASSWORD="${SMTP_MAIL_PASSWORD}" -e CLOUDINARY_CLOUD_NAME="${CLOUDINARY_CLOUD_NAME}" -e CLOUDINARY_API_KEY="${CLOUDINARY_API_KEY}" -e CLOUDINARY_API_SECRET="${CLOUDINARY_API_SECRET}" ${{secrets.DOCKERHUB_USERNAME}}:latest
+#            pull docker image
+            docker pull $IMAGE_NAME:latest
+#            run docker container
+            docker run -d -p ${secrets.SERVER_PORT}:8080 \
+            -e DB_USERNAME="${secrets.DB_USERNAME}" \
+            -e DB_PASSWORD="${secrets.DB_PASSWORD}" \
+            -e DB_URL="${secrets.DB_URL}" \
+            -e DEV_TO_TOKEN="${secrets.DEV_TO_TOKEN}" 
+            -e AWS_ACCESS_KEY_ID="${secrets.AWS_ACCESS_KEY_ID}" \
+            -e AWS_REGION="${secrets.AWS_REGION}" \
+            -e AWS_SECRET_ACCESS_KEY="${secrets.AWS_SECRET_ACCESS_KEY}" \
+            -e AWS_BUCKET_NAME="${secrets.AWS_BUCKET_NAME}" \
+            -e JWT_SECRET="${secrets.JWT_SECRET}" \
+            -e JWT_EXPIRATION="${secrets.JWT_EXPIRATION}" \
+            -e SMTP_MAIL_HOST="${secrets.SMTP_MAIL_HOST}" \
+            -e SMTP_MAIL_PORT="${secrets.SMTP_MAIL_PORT}" \
+            -e SMTP_MAIL_USERNAME="${secrets.SMTP_MAIL_USERNAME}" \
+            -e SMTP_MAIL_PASSWORD="${secrets.SMTP_MAIL_PASSWORD}" \
+            -e CLOUDINARY_CLOUD_NAME="${secrets.CLOUDINARY_CLOUD_NAME}" \
+            -e CLOUDINARY_API_KEY="${secrets.CLOUDINARY_API_KEY}" \
+            -e CLOUDINARY_API_SECRET="${secrets.CLOUDINARY_API_SECRET}" \
+            $IMAGE_NAME:latest
           
               
