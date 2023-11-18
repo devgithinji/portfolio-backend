@@ -49,12 +49,6 @@ jobs:
           distribution: 'adopt'
           java-version: '17'
 
-      - name: Debug Database Configuration
-        run: |
-          echo "DB_URL: $DB_URL"
-          echo "DB_USERNAME: $DB_USERNAME"
-          echo "DB_PASSWORD: $DB_PASSWORD"
-
       - name: Build with Maven
         run: mvn clean package -DskipTests
 
