@@ -52,7 +52,7 @@ jobs:
             # stop docker container
             docker stop portfolio-backend
             # run docker container
-            docker run --name portfolio-backend -d -p ${{ secrets.SERVER_PORT }}:8080 \
+            docker run --name portfolio-backend -d --network projectsnet -p ${{ secrets.SERVER_PORT }}:8080 \
               -e DB_USERNAME="${{ secrets.DB_USERNAME }}" \
               -e DB_PASSWORD="${{ secrets.DB_PASSWORD }}" \
               -e DB_URL="${{ secrets.DB_URL }}" \
