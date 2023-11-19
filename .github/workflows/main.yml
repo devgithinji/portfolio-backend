@@ -50,7 +50,7 @@ jobs:
             # pull docker image
             docker pull ${{secrets.DOCKERHUB_USERNAME}}/portfolio-backend:latest
             # run docker container
-            docker run -d -p ${{ secrets.SERVER_PORT }}:8080 \
+            docker run --name portfolio-backend -d -p ${{ secrets.SERVER_PORT }}:8080 \
               -e DB_USERNAME="${{ secrets.DB_USERNAME }}" \
               -e DB_PASSWORD="${{ secrets.DB_PASSWORD }}" \
               -e DB_URL="${{ secrets.DB_URL }}" \
