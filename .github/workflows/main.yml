@@ -47,10 +47,20 @@ jobs:
           username: ${{secrets.EC2_USERNAME}}
           key: ${{secrets.EC2_PRIVATE_KEY}}
           script: |
+            # remove stopped containers and dangling images
+            docker container prune -f && docker image prune -af
+            
+            # stop and remove existing container if running
+            docker stop portfolio-backend 
+            docker rm portfolio-backend
+            
+            # remove docker image
+            docker rmi densoftdev/portfolio-backend:latest
+            
             # pull docker image
             docker pull ${{secrets.DOCKERHUB_USERNAME}}/portfolio-backend:latest
-            # stop docker container
-            docker stop portfolio-backend
+            
+      
             # run docker container
             docker run --name portfolio-backend -d --network projectsnet -p ${{ secrets.SERVER_PORT }}:8080 \
               -e DB_USERNAME="${{ secrets.DB_USERNAME }}" \
@@ -71,8 +81,7 @@ jobs:
               -e CLOUDINARY_API_KEY="${{ secrets.CLOUDINARY_API_KEY }}" \
               -e CLOUDINARY_API_SECRET="${{ secrets.CLOUDINARY_API_SECRET }}" \
               ${{secrets.DOCKERHUB_USERNAME}}/portfolio-backend:latest
-            # remove stopped containers and dangling images
-            docker container prune -f && docker image prune -f
+            
 
           
               
