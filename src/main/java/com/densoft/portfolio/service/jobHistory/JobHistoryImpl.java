@@ -24,7 +24,7 @@ public class JobHistoryImpl implements JobHistoryService {
 
     @Override
     public List<Job> getJobs() {
-        return jobRepository.findAll();
+        return jobRepository.findAllByOrderByIdDesc();
     }
 
     @Override
