@@ -66,7 +66,7 @@ public class Job extends BaseEntity implements Comparable<Job> {
             Date thisStartDate = dateFormat.parse(durationRange.split("-")[0].strip());
             Date otherStartDate = dateFormat.parse(otherjob.durationRange.split("-")[0].strip());
 
-            return thisStartDate.compareTo(otherStartDate);
+            return otherStartDate.compareTo(thisStartDate);
 
         } catch (Exception e) {
             System.out.println(e.getMessage());
