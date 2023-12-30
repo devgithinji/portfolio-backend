@@ -11,6 +11,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import static com.fasterxml.jackson.annotation.JsonProperty.Access;
@@ -20,7 +22,7 @@ import static com.fasterxml.jackson.annotation.JsonProperty.Access;
 @NoArgsConstructor
 @Entity
 @Table(name = "jobs")
-public class Job extends BaseEntity {
+public class Job extends BaseEntity implements Comparable<Job> {
 
 
     @Column(length = 100, nullable = false)
@@ -50,8 +52,26 @@ public class Job extends BaseEntity {
         this.durationRange = durationRange;
     }
 
+
     public List getAchievementsList() throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
         return objectMapper.readValue(this.achievements, List.class);
+    }
+
+    @Override
+    public int compareTo(Job otherjob) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MMM yyyy");
+        try {
+
+            Date thisStartDate = dateFormat.parse(durationRange.split("-")[0].strip());
+            Date otherStartDate = dateFormat.parse(otherjob.durationRange.split("-")[0].strip());
+
+            return thisStartDate.compareTo(otherStartDate);
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return 0;
+        }
+
     }
 }
